@@ -114,8 +114,8 @@ export default class App extends React.Component<{}, IAppState> {
                             name="history"
                             type="horizontal"
                             buttons={[
-                                { label: 'Zoom out', icon: mdiMagnifyMinusOutline, onClick: this.zoomIn, disabled },
-                                { label: 'Zoom in', icon: mdiMagnifyPlusOutline, onClick: this.zoomOut, disabled },
+                                { label: 'Zoom in', icon: mdiMagnifyPlusOutline, onClick: this.zoomIn, disabled },
+                                { label: 'Zoom out', icon: mdiMagnifyMinusOutline, onClick: this.zoomOut, disabled },
                                 { label: 'Reset', icon: mdiSquareOutline, onClick: this.zoomReset, disabled },
                             ]}
                         />
