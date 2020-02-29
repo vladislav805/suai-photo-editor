@@ -1,0 +1,29 @@
+.panel {
+    display: flex;
+
+    &__horizontal {
+        flex-direction: row;
+    }
+
+    &__vertical {
+        flex-direction: column;
+    }
+
+    &-button {
+        display: block;
+        padding: .25rem;
+
+        &:hover {
+            background: rgba($color: #000000, $alpha: .1);
+        }
+
+        &__disabled {
+            opacity: .4;
+            cursor: not-allowed;
+
+            &:hover {
+                background: none;
+            }
+        }
+    }
+}
