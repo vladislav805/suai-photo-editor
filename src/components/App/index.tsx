@@ -81,6 +81,7 @@ export default class App extends React.Component<{}, IAppState> {
     };
 
     render() {
+        const disabled = !this.state.image;
         return (
             <div className="app">
                 <Panel
@@ -88,17 +89,17 @@ export default class App extends React.Component<{}, IAppState> {
                     type="horizontal"
                     buttons={[
                         { label: 'Open', icon: mdiFolderOpenOutline, onClick: this.open },
-                        { label: 'Save', icon: mdiContentSave, onClick: this.save, disabled: !this.state.image },
+                        { label: 'Save', icon: mdiContentSave, onClick: this.save, disabled },
                     ]} />
                 <Panel
                     name="tools"
                     type="vertical"
                     buttons={[
-                        { icon: mdiBrightness4, label: 'Brightness', onClick: this.noop },
-                        { icon: mdiContrastBox, label: 'Contrast', onClick: this.noop },
-                        { icon: mdiCrop, label: 'Crop', onClick: this.noop },
-                        { icon: mdiFormatRotate90, label: 'Rotate to 90 deg', onClick: this.noop },
-                        { icon: mdiImageFilterVintage, label: 'Filters', onClick: this.noop }
+                        { icon: mdiBrightness4, label: 'Brightness', onClick: this.noop, disabled },
+                        { icon: mdiContrastBox, label: 'Contrast', onClick: this.noop, disabled },
+                        { icon: mdiCrop, label: 'Crop', onClick: this.noop, disabled },
+                        { icon: mdiFormatRotate90, label: 'Rotate to 90 deg', onClick: this.noop, disabled },
+                        { icon: mdiImageFilterVintage, label: 'Filters', onClick: this.noop, disabled }
                     ]} />
                 <Panel
                     name="status"
@@ -113,9 +114,9 @@ export default class App extends React.Component<{}, IAppState> {
                             name="history"
                             type="horizontal"
                             buttons={[
-                                { label: 'Zoom out', icon: mdiMagnifyMinusOutline, onClick: this.zoomIn },
-                                { label: 'Zoom in', icon: mdiMagnifyPlusOutline, onClick: this.zoomOut },
-                                { label: 'Reset', icon: mdiSquareOutline, onClick: this.zoomReset },
+                                { label: 'Zoom out', icon: mdiMagnifyMinusOutline, onClick: this.zoomIn, disabled },
+                                { label: 'Zoom in', icon: mdiMagnifyPlusOutline, onClick: this.zoomOut, disabled },
+                                { label: 'Reset', icon: mdiSquareOutline, onClick: this.zoomReset, disabled },
                             ]}
                         />
                     </AsideBlock>
