@@ -11,6 +11,8 @@ const mode = isProduction ? 'production' : 'development';
 module.exports = {
     mode,
 
+    target: 'web',
+
     entry: {
         main: path.resolve('src', 'index.tsx'),
     },
@@ -24,8 +26,17 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                use: 'ts-loader',
+                use: [
+                    {
+                        loader: require.resolve('awesome-typescript-loader'),
+                        options: {
+                            // compile with TypeScript, then transpile with Babel
+                            useBabel: true,
+                        },
+                    },
+                ],
                 exclude: /node_modules/,
+
             },
             {
                 test: /\.s?css$/i,
@@ -59,6 +70,10 @@ module.exports = {
     },
 
     plugins: [
+        new webpack.LoaderOptionsPlugin({
+            minimize: true,
+            debug: false
+        }),
         new webpack.EnvironmentPlugin({
             VERSION: process.env.npm_package_version,
         }),
@@ -74,6 +89,7 @@ module.exports = {
         }),
     ],
 
+    devtool: '#sourcemap',
     devServer: {
         contentBase: path.resolve('dist'),
         host: '0.0.0.0',
