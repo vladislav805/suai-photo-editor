@@ -8,6 +8,13 @@
 
     &__vertical {
         flex-direction: column;
+        overflow: auto;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        scrollbar-width: none; /* Firefox */
     }
 
     &-button {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as classnames from 'classnames';
-import Icon from '@mdi/react';
 import './Panel.scss';
+import PanelItem from './PanelItem';
 
 export type IPanelButton = {
     icon?: string;
@@ -27,39 +27,6 @@ export interface IPanelState {
 }
 
 export default class Panel extends React.Component<IPanelProps, IPanelState> {
-
-    private entry = (button: IPanelEntry) => {
-        if (React.isValidElement(button)) {
-            return button;
-        }
-
-        if ((button as IPanelText).text) {
-            const { text } = button as IPanelText;
-            return <div className='panel-text'>{text}</div>
-        }
-
-        const { icon, label, disabled, onClick } = button as IPanelButton;
-
-        return (
-            <div
-                className={classnames('panel-button', {
-                    'panel-button__disabled': disabled
-                })}
-                onClick={onClick}
-                title={label}>
-                {icon
-                    ? (
-                        <Icon
-                            path={icon}
-                            size={1}
-                            color="#ffffff" />
-                    )
-                    : label
-                }
-            </div>
-        );
-    };
-
     render() {
         return (
             <div className={classnames(
@@ -67,7 +34,9 @@ export default class Panel extends React.Component<IPanelProps, IPanelState> {
                 'panel__' + this.props.type,
                 this.props.name && 'panel--' + this.props.name,
             )}>
-                {(this.props.buttons || []).map(entry => this.entry(entry))}
+                {(this.props.buttons || []).map((entry, i) => (
+                    <PanelItem key={i} entry={entry} />
+                ))}
             </div>
         );
     }
