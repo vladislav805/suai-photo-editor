@@ -1,11 +1,13 @@
 import * as React from 'react';
 import './App.scss';
 import Panel, { IPanelButton } from '../Panel';
-import { mdiFolderOpenOutline, mdiContentSave } from '@mdi/js';
-import { saveAs } from 'file-saver';
+import Canvas from '../Canvas';
+import { mdiFolderOpenOutline, mdiContentSave, mdiBrightness4, mdiContrastBox, mdiImageFilterVintage } from '@mdi/js';
+import StatusBar, { StatusController } from '../StatusBar';
+
 
 interface IAppState {
-    file?: File;
+    image?: HTMLImageElement;
     // history: IHistoryEntry[];
 }
 
@@ -15,31 +17,76 @@ export default class App extends React.Component<{}, IAppState> {
     };
 
     private open = () => {
+        const sc = StatusController.getInstance();
+
+        sc.set('Select file...');
         const elem = document.createElement('input');
         elem.type = 'file';
         elem.accept = 'image/*';
-        elem.onchange = (event) => {
-            this.setState({
-                file: elem.files[0],
-            });
+
+        elem.onchange = () => {
+            const image = new Image();
+            const file = elem.files[0];
+
+            sc.set('Loading...');
+
+            if (/image.*/.test(file.type)) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = evt => {
+                    if (evt.target.readyState === FileReader.DONE) {
+                        image.src = evt.target.result as string;
+                        this.setState({ image });
+                        sc.set('Done');
+                    }
+                }
+            } else {
+                sc.set('Error: not image');
+            }
         };
         elem.click();
     };
 
     private save = () => {
-        saveAs(this.state.file, this.state.file.name);
+        //saveAs(this.state.file, this.state.file.name);
     };
 
     private getButtons = (): IPanelButton[] => [
         { label: 'Open', icon: mdiFolderOpenOutline, onClick: this.open },
-        { label: 'Save', icon: mdiContentSave, onClick: this.save, disabled: !this.state.file },
+        { label: 'Save', icon: mdiContentSave, onClick: this.save, disabled: !this.state.image },
     ];
 
+    private noop = () => {
+        // todo
+    };
+
     render() {
-        console.log(this.state);
         return (
             <div className="app">
-                <Panel type="horizontal" buttons={this.getButtons()} />
+                <Panel
+                    name="file"
+                    type="horizontal"
+                    buttons={this.getButtons()} />
+                <Panel
+                    name="tools"
+                    type="vertical"
+                    buttons={[
+                        { icon: mdiBrightness4, label: 'Brightness', onClick: this.noop },
+                        { icon: mdiContrastBox, label: 'Contrast', onClick: this.noop },
+                        { icon: mdiImageFilterVintage, label: 'Filters', onClick: this.noop }
+                    ]} />
+                <Panel
+                    name="status"
+                    type="horizontal"
+                    buttons={[
+                        <StatusBar key="status" />
+                    ]} />
+                <div className="panel--aside">
+                    <div className="panel--aside_nav">nav</div>
+                    <div className="panel--aside_history">history</div>
+                </div>
+                <Canvas
+                    image={this.state.image} />
             </div>
         );
     }
