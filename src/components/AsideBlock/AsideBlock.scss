@@ -14,6 +14,7 @@
         font-weight: 900;
         line-height: 2rem;
         padding: 0 $horizontal-padding;
+
         @include non-select;
 
         &::before {
@@ -32,11 +33,11 @@
     &-content {
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.15s ease-out;
+        transition: max-height .15s ease-out;
 
         .asideBlock__open & {
             max-height: 500px;
-            transition: max-height 0.25s ease-in;
+            transition: max-height .25s ease-in;
         }
     }
 }

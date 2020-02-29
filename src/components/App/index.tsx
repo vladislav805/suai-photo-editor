@@ -13,7 +13,7 @@ interface IAppState {
     file?: File;
     image?: HTMLImageElement;
     // canvas for thumbnails for preview of filter?
-    historyIndex: number,
+    historyIndex: number;
     history: IHistoryEntry[];
 }
 
