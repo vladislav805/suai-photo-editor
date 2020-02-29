@@ -1,0 +1,15 @@
+name: Build
+on: [push]
+jobs:
+  eslint:
+    name: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build
+        run: |
+          npm ci
+          npm run build
