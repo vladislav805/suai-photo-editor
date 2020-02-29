@@ -35,6 +35,13 @@ body,
     .panel--aside {
         grid-row: 1 / 3;
         grid-column: 3 / 4;
+
+        overflow: auto;
+
+        display: flex;
+
+        flex-flow: column nowrap;
+        justify-content: flex-start;
     }
 
     .panel--image {

@@ -1,6 +1,8 @@
 import * as React from 'react';
 import './Canvas.scss';
 import { StatusController } from '../StatusBar';
+import Connector from '../../utils/connector';
+import { saveAs } from 'file-saver';
 
 export interface ICanvasProps {
     image?: HTMLImageElement;
@@ -17,10 +19,20 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         scale: CANVAS_SCALE_NOT_DEFINED,
     };
 
+    private connector: Connector;
+
     private image: HTMLImageElement;
     private wrap: HTMLDivElement;
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
+
+    constructor(props: ICanvasProps) {
+        super(props);
+
+        this.connector = Connector.getInstance();
+
+        this.connector.on('save', this.onSave);
+    }
 
     private setWrap = (node: HTMLDivElement) => this.wrap = node;
     private setCanvas = (node: HTMLCanvasElement) => this.canvas = node;
@@ -30,8 +42,24 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             return;
         }
 
-        window.addEventListener('resize', this.rescale);
+        Connector.getInstance().on('zoom', this.connectorZoomEventListener);
+
+        window.addEventListener('resize', this.resetScale);
     }
+
+    componentWillUnmount() {
+        Connector.getInstance().remove('zoom', this.connectorZoomEventListener);
+
+        window.removeEventListener('resize', this.resetScale);
+    }
+
+    private connectorZoomEventListener = ({ delta }: { delta: number}) => {
+        if (delta !== 0) {
+            this.setScale(this.state.scale + delta * .03);
+        } else {
+            this.resetScale();
+        }
+    };
 
     // from file https://gist.github.com/felixzapata/3684117
     private loadImage = () => {
@@ -41,37 +69,45 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         this.ctx = this.canvas.getContext('2d');
 
         this.ctx.drawImage(this.image, 0, 0);
-        this.rescale();
+        this.resetScale();
     };
 
-    private rescale = () => {
-        if (this.state.scale === CANVAS_SCALE_NOT_DEFINED) {
-            const { offsetWidth, offsetHeight } = this.wrap;
-            const { width, height } = this.canvas;
+    private getDefaultScale = () => {
+        const { offsetWidth, offsetHeight } = this.wrap;
+        const { width, height } = this.canvas;
 
-            let scale = 1;
+        let scale = 1;
 
-            if (width < height) {
-                scale = offsetHeight / height * .95;
-            } else {
-                scale = offsetWidth / width * .95;
-            }
-
-            this.setState({ scale });
+        if (width < height) {
+            scale = offsetHeight / height * .95;
+        } else {
+            scale = offsetWidth / width * .95;
         }
+
+        return scale;
+    };
+
+    private resetScale = () => {
+        this.setScale(this.getDefaultScale());
+    };
+
+    private setScale = (scale: number) => {
+        scale = Math.max(scale, .01);
+        this.setState({ scale });
+
+        StatusController.getInstance().temporary(`Scale: ${~~(scale * 100)}%`);
     };
 
     private onWheel = (event: React.WheelEvent) => {
         if (event.ctrlKey) {
             event.preventDefault();
 
-            const direction = event.deltaY;
-            const scale = Math.max(this.state.scale - direction * .01, .01);
-
-            this.setState({ scale });
-
-            StatusController.getInstance().temporary(`Scale: ${~~(scale * 100)}%`);
+            this.setScale(this.state.scale - event.deltaY * .01);
         }
+    };
+
+    private onSave = ({ name }: { name: string }) => {
+        this.canvas.toBlob(blob => saveAs(blob, name));
     };
 
     render() {
