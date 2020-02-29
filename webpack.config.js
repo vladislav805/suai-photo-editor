@@ -91,7 +91,7 @@ module.exports = {
 
     devtool: '#sourcemap',
     devServer: {
-        contentBase: path.resolve('dist'),
+        contentBase: path.resolve('public'),
         host: '0.0.0.0',
         port: 8080,
     },
