@@ -36,8 +36,8 @@ export default class PanelItem extends React.Component<IPanelItemProps, IPanelIt
                 className={classnames('panel-button', {
                     'panel-button__disabled': disabled
                 })}
-                onClick={this.onClick}
-                title={label}>
+                onClick={this.onClick}>
+                <div className="panel-button-label">{label}</div>
                 {icon
                     ? (
                         <Icon

@@ -33,11 +33,16 @@
     &-content {
         max-height: 0;
         overflow: hidden;
-        transition: max-height .15s ease-out;
+        transition: {
+            property: max-height, overflow;
+            duration: .25s, .1s;
+            delay: 0, .25s;
+            timing-function: ease-in-out, linear;
+        };
 
         .asideBlock__open & {
             max-height: 500px;
-            transition: max-height .25s ease-in;
+            overflow: unset;
         }
     }
 }

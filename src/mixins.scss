@@ -1,3 +1,9 @@
 @mixin non-select {
     user-select: none;
 }
+
+@mixin non-interactive {
+    -webkit-pointer-events: none;
+    -moz-pointer-events: none;
+    pointer-events: none;
+}
