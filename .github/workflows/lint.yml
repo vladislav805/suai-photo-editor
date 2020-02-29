@@ -1,0 +1,21 @@
+name: Lint
+on: [push]
+jobs:
+  eslint:
+    name: eslint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: eslint
+        run: |
+          npm ci
+          npm run lint:es
+  stylelint:
+    name: stylelint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: stylelint
+        run: |
+          npm ci
+          npm run lint:style
