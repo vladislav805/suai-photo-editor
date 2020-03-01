@@ -61,7 +61,8 @@ export default class App extends React.Component<{}, IAppState> {
                             image,
                             history: [
                                 { id: 0, type: HistoryType.OPEN }
-                            ]
+                            ],
+                            historyIndex: 0
                         });
                         sc.set('Done');
                     }
