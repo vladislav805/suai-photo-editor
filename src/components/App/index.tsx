@@ -56,7 +56,13 @@ export default class App extends React.Component<{}, IAppState> {
                 reader.onload = evt => {
                     if (evt.target.readyState === FileReader.DONE) {
                         image.src = evt.target.result as string;
-                        this.setState({ file, image, history: [] });
+                        this.setState({
+                            file,
+                            image,
+                            history: [
+                                { id: 0, type: HistoryType.OPEN }
+                            ]
+                        });
                         sc.set('Done');
                     }
                 }
