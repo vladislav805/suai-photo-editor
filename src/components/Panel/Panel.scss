@@ -58,11 +58,6 @@
             @include non-select;
             @include non-interactive;
 
-            .panel-button:hover & {
-                transform: translate(5px, 0);
-                opacity: 1;
-            }
-
             .panel__horizontal & {
                 top: 100%;
                 transform: translateY(-100%);
@@ -72,9 +67,12 @@
                 left: 100%;
                 transform: translateX(-100%);
             }
+
+            .panel-button:hover & {
+                transform: translate(5px, 0);
+                opacity: 1;
+            }
         }
-
-
     }
 
     &-text {
