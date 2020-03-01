@@ -111,7 +111,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
     };
 
     render() {
-        if (!this.image && this.props.image) {
+        if (this.image !== this.props.image) {
             this.image = this.props.image;
             setTimeout(this.loadImage, 200);
         }
