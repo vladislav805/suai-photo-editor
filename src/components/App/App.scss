@@ -43,23 +43,4 @@ body,
         flex-flow: column nowrap;
         justify-content: flex-start;
     }
-
-    .panel--image {
-        grid-row: 2 / 3;
-        grid-column: 2 / 3;
-        width: 100%;
-        height: 100%;
-
-        background: #444444;
-
-        overflow: auto;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        .canvas {
-            box-shadow: 0 0 2px 1px rgba($color: #000000, $alpha: .5);
-        }
-    }
 }
