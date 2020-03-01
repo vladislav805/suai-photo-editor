@@ -1,0 +1,32 @@
+@import '../../mixins.scss';
+
+.history-entry {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    border-left: 6px solid transparent;
+
+    @include non-select;
+
+    &:hover {
+        background: rgba($color: #bebebe, $alpha: .1);
+    }
+
+    &__active {
+        border-left-color: rgba($color: white, $alpha: .1);
+    }
+
+    &-id {
+        line-height: 18px;
+        width: 20px;
+        margin: 0 10px;
+        text-align: center;
+        border: 1px solid #444444;
+        border-radius: 50%;
+        color: #bebebe;
+    }
+
+    &-label {
+        line-height: 30px;
+    }
+}

@@ -1,0 +1,48 @@
+@import '../../mixins.scss';
+
+.asideBlock {
+    border-bottom: 2px solid #444444;
+
+    $horizontal-padding: 8px;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    &-title {
+        background: #2a2a2a;
+        font-weight: 900;
+        line-height: 2rem;
+        padding: 0 $horizontal-padding;
+
+        @include non-select;
+
+        &::before {
+            content: '🡺'; // '⬛';
+            padding-right: $horizontal-padding;
+            display: inline-block;
+            width: 28px;
+            text-align: center;
+        }
+
+        .asideBlock__open &::before {
+            content: '🡾'; // '⬜';
+        }
+    }
+
+    &-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: {
+            property: max-height, overflow;
+            duration: .25s, .1s;
+            delay: 0, .25s;
+            timing-function: ease-in-out, linear;
+        };
+
+        .asideBlock__open & {
+            max-height: 500px;
+            overflow: unset;
+        }
+    }
+}

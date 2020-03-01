@@ -1,0 +1,43 @@
+import * as React from 'react';
+import * as classnames from 'classnames';
+import './Panel.scss';
+import PanelItem from './PanelItem';
+
+export type IPanelButton = {
+    icon?: string;
+    label: string;
+    onClick: () => void;
+    disabled?: boolean;
+};
+
+export type IPanelText = {
+    text: string;
+};
+
+export type IPanelEntry = IPanelButton | IPanelText | React.ReactElement | Element;
+
+export interface IPanelProps {
+    buttons: IPanelEntry[];
+    type: 'vertical' | 'horizontal';
+    name: string;
+}
+
+export interface IPanelState {
+
+}
+
+export default class Panel extends React.Component<IPanelProps, IPanelState> {
+    render() {
+        return (
+            <div className={classnames(
+                'panel',
+                'panel__' + this.props.type,
+                this.props.name && 'panel--' + this.props.name,
+            )}>
+                {(this.props.buttons || []).map((entry, i) => (
+                    <PanelItem key={i} entry={entry} />
+                ))}
+            </div>
+        );
+    }
+}
