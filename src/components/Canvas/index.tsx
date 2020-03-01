@@ -137,6 +137,8 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
                         width: this.canvas.width * this.state.scale,
                         height: this.canvas.height * this.state.scale,
                     }}
+                    width={0}
+                    height={0}
                     ref={this.setCanvas} />
             </div>
         );
