@@ -78,10 +78,14 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
 
         let scale = 1;
 
-        if (width < height) {
-            scale = offsetHeight / height * .95;
+        if (offsetHeight >= height && offsetWidth >= width) {
+            scale = 1;
         } else {
-            scale = offsetWidth / width * .95;
+            if (width < height) {
+                scale = offsetHeight / height * .95;
+            } else {
+                scale = offsetWidth / width * .95;
+            }
         }
 
         return scale;
