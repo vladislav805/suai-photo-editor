@@ -108,6 +108,12 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
 
             this.setScale(this.state.scale - event.deltaY * .01);
         }
+
+        if (event.shiftKey) {
+            event.preventDefault();
+
+            this.wrap.scrollBy(event.deltaY > 0 ? 15 : -15, 0);
+        }
     };
 
     private onSave = ({ name }: { name: string }) => {
