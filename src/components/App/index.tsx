@@ -8,6 +8,7 @@ import History from '../History';
 import Connector from '../../utils/connector';
 import { IHistoryEntry, HistoryType } from '../../types/history';
 import { mdiFolderOpenOutline, mdiContentSave, mdiBrightness4, mdiContrastBox, mdiImageFilterVintage, mdiRedo, mdiUndo, mdiMagnifyMinusOutline, mdiMagnifyPlusOutline, mdiSquareOutline, mdiCrop, mdiFormatRotate90 } from '@mdi/js';
+import { Tool } from '../../types/tools';
 
 interface IAppState {
     file?: File;
@@ -15,18 +16,14 @@ interface IAppState {
     // canvas for thumbnails for preview of filter?
     historyIndex: number;
     history: IHistoryEntry[];
+    activeTool: Tool;
 }
 
 export default class App extends React.Component<{}, IAppState> {
     state: IAppState = {
-        historyIndex: 1,
-        history: [
-            { id: 0, type: HistoryType.OPEN },
-            { id: 1, type: HistoryType.CROP },
-            { id: 2, type: HistoryType.SET_BRIGHTNESS, data: { value: 30 } },
-            { id: 3, type: HistoryType.APPLY_FILTER, data: { filterId: 'Test' } },
-            { id: 4, type: HistoryType.SET_CONTRAST, data: { value: -1 } },
-        ]
+        historyIndex: 0,
+        history: [],
+        activeTool: Tool.NONE
     };
 
     private connector: Connector;
