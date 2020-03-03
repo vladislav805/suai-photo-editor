@@ -174,13 +174,13 @@ export default class App extends React.Component<{}, IAppState> {
                             onEntryClick={this.onEntryClick} />
                     </AsideBlock>
                 </div>
-                {this.state.history.length && (
+                {this.state.history.length ? (
                     <Canvas
                         imageUri={this.state.history[this.state.historyIndex].uri}
                         imageSize={this.state.imageSize}
                         scale={this.state.scale}
                         onChangeScale={this.setScale} />
-                )}
+                ) : <div className="panel--image" />}
             </div>
         );
     }
