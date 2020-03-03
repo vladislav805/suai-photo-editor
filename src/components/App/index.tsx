@@ -5,6 +5,7 @@ import Canvas from '../Canvas';
 import StatusBar, { StatusController } from '../StatusBar';
 import AsideBlock from '../AsideBlock';
 import History from '../History';
+import Range from '../Range';
 import { IHistoryEntry, HistoryType } from '../../types/history';
 import { mdiFolderOpenOutline, mdiContentSave, mdiBrightness4, mdiContrastBox, mdiImageFilterVintage, mdiRedo, mdiUndo, mdiMagnifyMinusOutline, mdiMagnifyPlusOutline, mdiSquareOutline, mdiFormatRotate90 } from '@mdi/js';
 import { Tool } from '../../types/tools';
@@ -35,6 +36,9 @@ interface IAppState {
 }
 
 // const THUMBNAIL_SIZE = 200;
+const SCALE_MIN = .25;
+const SCALE_MAX = 2.5;
+const SCALE_STEP = .01;
 
 export default class App extends React.Component<{}, IAppState> {
     state: IAppState = {
@@ -103,7 +107,7 @@ export default class App extends React.Component<{}, IAppState> {
 
     private setDeltaScale = (delta: number) => this.setScale(this.state.scale + delta * .03);
     private setScale = (scale: number) => {
-        scale = Math.min(Math.max(scale, .01), 2.5);
+        scale = Math.min(Math.max(scale, SCALE_MIN), SCALE_MAX);
         this.setState({ scale });
     };
     private scaleIn = () => this.setDeltaScale(1);
@@ -154,22 +158,19 @@ export default class App extends React.Component<{}, IAppState> {
                             name="history"
                             type="horizontal"
                             items={[
-                                { label: 'Zoom in', icon: mdiMagnifyPlusOutline, onClick: this.scaleIn, disabled },
                                 { label: 'Zoom out', icon: mdiMagnifyMinusOutline, onClick: this.scaleOut, disabled },
                                 { label: 'Reset', icon: mdiSquareOutline, onClick: this.scaleReset, disabled },
+                                { label: 'Zoom in', icon: mdiMagnifyPlusOutline, onClick: this.scaleIn, disabled },
                                 { text: `${~~(this.state.scale * 100)}%`}
                             ]}
                         />
-                        <div className="scale-wrap">
-                            <input
-                                className="scale-ruler"
-                                type="range"
-                                min={0.25}
-                                max={2.5}
-                                step={0.01}
-                                value={this.state.scale}
-                                onChange={this.onChangeScaleRuler} />
-                        </div>
+                        <Range
+                            className="scale-range"
+                            min={SCALE_MIN}
+                            max={SCALE_MAX}
+                            step={SCALE_STEP}
+                            value={this.state.scale}
+                            onChange={this.setScale} />
                     </AsideBlock>
                     <AsideBlock
                         title="History">

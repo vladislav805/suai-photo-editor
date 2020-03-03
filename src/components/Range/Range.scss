@@ -84,24 +84,24 @@ $contrast: 5% !default;
     }
 }
 
-.scale-wrap {
+.range {
     position: relative;
     margin: 0 15px;
     line-height: 0;
 
-    &::after {
-        display: block;
-        content: '';
-        position: absolute;
-        top: 12px;
-        bottom: 12px;
-        border-right: 1px solid $track-color;
-        left: calc(33.333333%);
-        z-index: 10;
-    }
-
-    .scale-ruler {
+    .range-ruler {
         position: relative;
         z-index: 20;
     }
+}
+
+.scale-range.range::after {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 12px;
+    bottom: 12px;
+    border-right: 1px solid $track-color;
+    left: calc(33.333333%);
+    z-index: 10;
 }
