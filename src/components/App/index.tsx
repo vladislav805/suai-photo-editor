@@ -2,7 +2,7 @@ import * as React from 'react';
 import './App.scss';
 import Panel from '../Panel';
 import Canvas from '../Canvas';
-import StatusBar from '../StatusBar';
+import StatusBar, { StatusController } from '../StatusBar';
 import AsideBlock from '../AsideBlock';
 import History from '../History';
 import { IHistoryEntry, HistoryType } from '../../types/history';
@@ -46,6 +46,12 @@ export default class App extends React.Component<{}, IAppState> {
 
     constructor(props: {}) {
         super(props);
+    }
+
+    componentDidUpdate(_prevProps: {}, prevState: IAppState) {
+        if (this.state.scale !== prevState.scale) {
+            StatusController.getInstance().temporary(`Scale to ${~~(this.state.scale * 100)}%`)
+        }
     }
 
     /**
@@ -96,7 +102,10 @@ export default class App extends React.Component<{}, IAppState> {
     };
 
     private setDeltaScale = (delta: number) => this.setScale(this.state.scale + delta * .03);
-    private setScale = (scale: number) => this.setState({ scale });
+    private setScale = (scale: number) => {
+        scale = Math.min(Math.max(scale, .01), 5);
+        this.setState({ scale });
+    };
     private scaleIn = () => this.setDeltaScale(1);
     private scaleOut = () => this.setDeltaScale(-1);
     private scaleReset = () => this.setScale(1);
@@ -104,8 +113,6 @@ export default class App extends React.Component<{}, IAppState> {
     private onEntryClick = (id: number) => this.setState({ historyIndex: id });
     private onUndo = () => this.onEntryClick(this.state.historyIndex - 1);
     private onRedo = () => this.onEntryClick(this.state.historyIndex + 1);
-
-    private onChangeScale = (scale: number) => this.setState({ scale });
 
     private noop = () => {
         // todo
@@ -172,7 +179,7 @@ export default class App extends React.Component<{}, IAppState> {
                         imageUri={this.state.history[this.state.historyIndex].uri}
                         imageSize={this.state.imageSize}
                         scale={this.state.scale}
-                        onChangeScale={this.onChangeScale} />
+                        onChangeScale={this.setScale} />
                 )}
             </div>
         );
