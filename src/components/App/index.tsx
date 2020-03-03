@@ -103,7 +103,7 @@ export default class App extends React.Component<{}, IAppState> {
 
     private setDeltaScale = (delta: number) => this.setScale(this.state.scale + delta * .03);
     private setScale = (scale: number) => {
-        scale = Math.min(Math.max(scale, .01), 5);
+        scale = Math.min(Math.max(scale, .01), 2.5);
         this.setState({ scale });
     };
     private scaleIn = () => this.setDeltaScale(1);
@@ -113,6 +113,8 @@ export default class App extends React.Component<{}, IAppState> {
     private onEntryClick = (id: number) => this.setState({ historyIndex: id });
     private onUndo = () => this.onEntryClick(this.state.historyIndex - 1);
     private onRedo = () => this.onEntryClick(this.state.historyIndex + 1);
+
+    private onChangeScaleRuler = (event: React.ChangeEvent<HTMLInputElement>) => this.setScale(+event.target.value);
 
     private noop = () => {
         // todo
@@ -125,14 +127,14 @@ export default class App extends React.Component<{}, IAppState> {
                 <Panel
                     name="file"
                     type="horizontal"
-                    buttons={[
+                    items={[
                         { label: 'Open', icon: mdiFolderOpenOutline, onClick: this.open },
                         { label: 'Save', icon: mdiContentSave, onClick: this.save, disabled },
                     ]} />
                 <Panel
                     name="tools"
                     type="vertical"
-                    buttons={[
+                    items={[
                         { icon: mdiBrightness4, label: 'Brightness', onClick: this.noop, disabled },
                         { icon: mdiContrastBox, label: 'Contrast', onClick: this.noop, disabled },
 //                        { icon: mdiCrop, label: 'Crop', onClick: this.noop, disabled },
@@ -142,8 +144,8 @@ export default class App extends React.Component<{}, IAppState> {
                 <Panel
                     name="status"
                     type="horizontal"
-                    buttons={[
-                        <StatusBar key="status" />
+                    items={[
+                        <StatusBar key="status" />,
                     ]} />
                 <div className="panel--aside">
                     <AsideBlock
@@ -151,19 +153,30 @@ export default class App extends React.Component<{}, IAppState> {
                         <Panel
                             name="history"
                             type="horizontal"
-                            buttons={[
+                            items={[
                                 { label: 'Zoom in', icon: mdiMagnifyPlusOutline, onClick: this.scaleIn, disabled },
                                 { label: 'Zoom out', icon: mdiMagnifyMinusOutline, onClick: this.scaleOut, disabled },
                                 { label: 'Reset', icon: mdiSquareOutline, onClick: this.scaleReset, disabled },
+                                { text: `${~~(this.state.scale * 100)}%`}
                             ]}
                         />
+                        <div className="scale-wrap">
+                            <input
+                                className="scale-ruler"
+                                type="range"
+                                min={0.25}
+                                max={2.5}
+                                step={0.01}
+                                value={this.state.scale}
+                                onChange={this.onChangeScaleRuler} />
+                        </div>
                     </AsideBlock>
                     <AsideBlock
                         title="History">
                         <Panel
                             name="history"
                             type="horizontal"
-                            buttons={[
+                            items={[
                                 { label: 'Undo', icon: mdiUndo, onClick: this.onUndo, disabled: this.state.historyIndex - 1 < 0 },
                                 { label: 'Redo', icon: mdiRedo, onClick: this.onRedo, disabled: this.state.historyIndex + 1 >= this.state.history.length },
                             ]}

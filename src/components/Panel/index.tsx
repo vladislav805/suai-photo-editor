@@ -17,14 +17,12 @@ export type IPanelText = {
 export type IPanelEntry = IPanelButton | IPanelText | React.ReactElement | Element;
 
 export interface IPanelProps {
-    buttons: IPanelEntry[];
+    items: IPanelEntry[];
     type: 'vertical' | 'horizontal';
     name: string;
 }
 
-export interface IPanelState {
-
-}
+export interface IPanelState {}
 
 export default class Panel extends React.Component<IPanelProps, IPanelState> {
     render() {
@@ -34,7 +32,7 @@ export default class Panel extends React.Component<IPanelProps, IPanelState> {
                 'panel__' + this.props.type,
                 this.props.name && 'panel--' + this.props.name,
             )}>
-                {(this.props.buttons || []).map((entry, i) => (
+                {(this.props.items || []).map((entry, i) => React.isValidElement(entry) ? entry : (
                     <PanelItem key={i} entry={entry} />
                 ))}
             </div>
