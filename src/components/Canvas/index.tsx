@@ -1,145 +1,87 @@
 import * as React from 'react';
 import './Canvas.scss';
-import { StatusController } from '../StatusBar';
-import Connector from '../../utils/connector';
-import { saveAs } from 'file-saver';
+import { ImageSize } from '../../types/image';
 
 export interface ICanvasProps {
-    image?: HTMLImageElement;
+    // Image URI
+    imageUri?: string;
+
+    // Image size
+    imageSize?: ImageSize;
+
+    // Scale of preivew
+    scale?: number;
+
+    // Callback when scale changed
+    onChangeScale?: (scale: number) => void;
 }
 
-export interface ICanvasState {
-    scale: number;
-}
-
-const CANVAS_SCALE_NOT_DEFINED = -1;
+export interface ICanvasState {}
 
 export default class Canvas extends React.Component<ICanvasProps, ICanvasState> {
-    state: ICanvasState = {
-        scale: CANVAS_SCALE_NOT_DEFINED,
-    };
+    state: ICanvasState = {};
 
-    private connector: Connector;
-
-    private image: HTMLImageElement;
     private wrap: HTMLDivElement;
-    private canvas: HTMLCanvasElement;
-    private ctx: CanvasRenderingContext2D;
+    private image: HTMLImageElement;
 
     constructor(props: ICanvasProps) {
         super(props);
-
-        this.connector = Connector.getInstance();
-
-        this.connector.on('save', this.onSave);
     }
 
     private setWrap = (node: HTMLDivElement) => this.wrap = node;
-    private setCanvas = (node: HTMLCanvasElement) => this.canvas = node;
-
-    componentDidMount() {
-        if (!this.canvas) {
-            return;
-        }
-
-        Connector.getInstance().on('zoom', this.connectorZoomEventListener);
-
-        window.addEventListener('resize', this.resetScale);
-    }
-
-    componentWillUnmount() {
-        Connector.getInstance().remove('zoom', this.connectorZoomEventListener);
-
-        window.removeEventListener('resize', this.resetScale);
-    }
-
-    private connectorZoomEventListener = ({ delta }: { delta: number}) => {
-        if (delta !== 0) {
-            this.setScale(this.state.scale + delta * .03);
-        } else {
-            this.resetScale();
-        }
-    };
-
-    // from file https://gist.github.com/felixzapata/3684117
-    private loadImage = () => {
-        this.canvas.width = this.image.naturalWidth;
-        this.canvas.height = this.image.naturalHeight;
-
-        this.ctx = this.canvas.getContext('2d');
-
-        this.ctx.drawImage(this.image, 0, 0);
-        this.resetScale();
-    };
+    private setImage = (node: HTMLImageElement) => this.image = node;
 
     private getDefaultScale = () => {
-        const { offsetWidth, offsetHeight } = this.wrap;
-        const { width, height } = this.canvas;
+        const { offsetWidth: wW, offsetHeight: wH } = this.wrap;
+        const { naturalWidth: iW, naturalHeight: iH } = this.image;
 
         let scale = 1;
 
-        if (offsetHeight >= height && offsetWidth >= width) {
+        if (wH >= iH && wW >= iW) {
             scale = 1;
         } else {
-            if (width < height) {
-                scale = offsetHeight / height * .95;
+            if (iW < iH) {
+                scale = wH / iH * .95;
             } else {
-                scale = offsetWidth / width * .95;
+                scale = wW / iW * .95;
             }
         }
 
         return scale;
     };
 
-    private resetScale = () => {
-        this.setScale(this.getDefaultScale());
-    };
-
-    private setScale = (scale: number) => {
-        scale = Math.max(scale, .01);
-        this.setState({ scale });
-
-        StatusController.getInstance().temporary(`Scale: ${~~(scale * 100)}%`);
-    };
-
     private onWheel = (event: React.WheelEvent) => {
         if (event.ctrlKey) {
             event.preventDefault();
 
-            this.setScale(this.state.scale - event.deltaY * .01);
+            this.props.onChangeScale(this.props.scale - event.deltaY * .01);
         }
 
         if (event.shiftKey) {
             event.preventDefault();
 
-            this.wrap.scrollBy(event.deltaY > 0 ? 15 : -15, 0);
+            this.wrap.scrollBy(Math.sign(event.deltaY) * 15, 0);
         }
-    };
-
-    private onSave = ({ name }: { name: string }) => {
-        this.canvas.toBlob(blob => saveAs(blob, name));
     };
 
     render() {
-        if (this.image !== this.props.image) {
-            this.image = this.props.image;
-            setTimeout(this.loadImage, 200);
-        }
+        const { imageUri, imageSize, scale } = this.props;
+        const { width, height } = imageSize;
 
         return (
             <div
                 onWheel={this.onWheel}
                 className="panel--image"
                 ref={this.setWrap}>
-                <canvas
+                <img
+                    src={imageUri}
+                    alt="Preview"
                     className="canvas"
-                    style={this.canvas && {
-                        width: this.canvas.width * this.state.scale,
-                        height: this.canvas.height * this.state.scale,
-                    }}
-                    width={0}
-                    height={0}
-                    ref={this.setCanvas} />
+                    ref={this.setImage}
+                    style={{
+                        width: width * scale,
+                        height: height * scale,
+                    }} />
             </div>
         );
     }
