@@ -1,6 +1,7 @@
 import * as React from 'react';
 import './Canvas.scss';
 import { ImageSize } from '../../types/image';
+import Connector from '../../utils/connector';
 
 export interface ICanvasProps {
     // Image URI
@@ -27,6 +28,20 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
     constructor(props: ICanvasProps) {
         super(props);
     }
+
+    componentDidMount() {
+        Connector.getInstance().on('zoom', this.connectorZoomFit);
+    }
+
+    componentWillUnmount() {
+        Connector.getInstance().remove('zoom', this.connectorZoomFit);
+    }
+
+    private connectorZoomFit = (args: Record<string, string | boolean | number>) => {
+        if (args.fit) {
+            this.props.onChangeScale && this.props.onChangeScale(this.getDefaultScale());
+        }
+    };
 
     private setWrap = (node: HTMLDivElement) => this.wrap = node;
     private setImage = (node: HTMLImageElement) => this.image = node;

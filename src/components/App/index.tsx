@@ -7,11 +7,12 @@ import AsideBlock from '../AsideBlock';
 import History from '../History';
 import Range from '../Range';
 import { IHistoryEntry, HistoryType } from '../../types/history';
-import { mdiFolderOpenOutline, mdiContentSave, mdiBrightness4, mdiContrastBox, mdiImageFilterVintage, mdiRedo, mdiUndo, mdiMagnifyMinusOutline, mdiMagnifyPlusOutline, mdiSquareOutline, mdiFormatRotate90 } from '@mdi/js';
+import { mdiFolderOpenOutline, mdiContentSave, mdiBrightness4, mdiContrastBox, mdiImageFilterVintage, mdiRedo, mdiUndo, mdiMagnifyMinusOutline, mdiMagnifyPlusOutline, mdiSquareOutline, mdiFormatRotate90, mdiRelativeScale } from '@mdi/js';
 import { Tool } from '../../types/tools';
 import { readFile, openChoosePhotoDialog } from '../../utils/files';
 import { createCanvasWithImage, saveCanvas } from '../../utils/canvas';
 import { ImageSize } from '../../types/image';
+import Connector from '../../utils/connector';
 
 interface IAppState {
     // File
@@ -113,12 +114,13 @@ export default class App extends React.Component<{}, IAppState> {
     private scaleIn = () => this.setDeltaScale(1);
     private scaleOut = () => this.setDeltaScale(-1);
     private scaleReset = () => this.setScale(1);
+    private scaleFit = () => {
+        Connector.getInstance().fire('zoom', { fit: true });
+    };
 
     private onEntryClick = (id: number) => this.setState({ historyIndex: id });
     private onUndo = () => this.onEntryClick(this.state.historyIndex - 1);
     private onRedo = () => this.onEntryClick(this.state.historyIndex + 1);
-
-    private onChangeScaleRuler = (event: React.ChangeEvent<HTMLInputElement>) => this.setScale(+event.target.value);
 
     private noop = () => {
         // todo
@@ -160,6 +162,7 @@ export default class App extends React.Component<{}, IAppState> {
                             items={[
                                 { label: 'Zoom out', icon: mdiMagnifyMinusOutline, onClick: this.scaleOut, disabled },
                                 { label: 'Reset', icon: mdiSquareOutline, onClick: this.scaleReset, disabled },
+                                { label: 'Fit', icon: mdiRelativeScale, onClick: this.scaleFit, disabled },
                                 { label: 'Zoom in', icon: mdiMagnifyPlusOutline, onClick: this.scaleIn, disabled },
                                 { text: `${~~(this.state.scale * 100)}%`}
                             ]}
