@@ -69,7 +69,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         if (event.ctrlKey) {
             event.preventDefault();
 
-            this.props.onChangeScale(this.props.scale - event.deltaY * .01);
+            this.props.onChangeScale?.(this.props.scale - event.deltaY * .01);
         }
 
         if (event.shiftKey) {
