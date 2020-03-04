@@ -15,6 +15,8 @@ export interface ICanvasProps {
 
     // Callback when scale changed
     onChangeScale?: (scale: number) => void;
+
+    onPreviewReady?: (image: HTMLImageElement) => void;
 }
 
 export interface ICanvasState {}
@@ -44,7 +46,10 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
     };
 
     private setWrap = (node: HTMLDivElement) => this.wrap = node;
-    private setImage = (node: HTMLImageElement) => this.image = node;
+    private setImage = (node: HTMLImageElement) => {
+        this.image = node;
+        this.props.onPreviewReady?.(node);
+    };
 
     private getDefaultScale = () => {
         const { offsetWidth: wW, offsetHeight: wH } = this.wrap;

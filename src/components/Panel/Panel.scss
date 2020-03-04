@@ -27,13 +27,16 @@
         padding: .5rem;
         line-height: 0;
         position: relative;
+        border-left: 2px solid transparent;
 
-        &:hover {
-            background: rgba($color: #ffffff, $alpha: .1);
+        @include hover-background;
+
+        &__active {
+            @include left-border-active(1);
         }
 
         &__disabled {
-            opacity: .4;
+            opacity: .3;
             cursor: not-allowed;
 
             &:hover {

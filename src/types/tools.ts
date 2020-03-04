@@ -4,5 +4,11 @@ export enum Tool {
     ROTATE,
     BRIGHTNESS,
     CONTRAST,
+    BLUR,
+    GRAYSCALE,
+    HUE_ROTATE,
+    INVERT,
+    SATURATE,
+    SEPIA,
     FILTER
 }

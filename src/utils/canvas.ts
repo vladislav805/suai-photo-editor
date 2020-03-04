@@ -1,5 +1,6 @@
 import { ImageSize, ImageType } from '../types/image';
 import { saveAs } from 'file-saver';
+import { makeImage } from './image';
 
 export type CanvasWithContext = {
     canvas: HTMLCanvasElement;
@@ -19,17 +20,12 @@ export const createCanvas = (size?: ImageSize): CanvasWithContext => {
     return { canvas, context };
 };
 
-export const createCanvasWithImage = async(imageUri: string): Promise<CanvasWithContext> => new Promise<CanvasWithContext>(resolve => {
-    const image = new Image();
+export const createCanvasWithImage = async(imageUri: string): Promise<CanvasWithContext> => makeImage(imageUri).then((image) => {
+    const { canvas, context } = createCanvas({ width: image.naturalWidth, height: image.naturalHeight });
 
-    image.onload = () => {
-        const { canvas, context } = createCanvas({ width: image.naturalWidth, height: image.naturalHeight });
+    context.drawImage(image, 0, 0);
 
-        context.drawImage(image, 0, 0);
-
-        resolve({ canvas, context });
-    };
-    image.src = imageUri;
+    return { canvas, context }
 });
 
 export const copyCanvas = async(source: HTMLCanvasElement): Promise<CanvasWithContext> => new Promise<CanvasWithContext>(resolve => {

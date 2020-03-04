@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IHistoryEntry, HistoryType, IHistoryEntryData } from '../../types/history';
+import { IHistoryEntry, IHistoryEntryData, HistoryType } from '../../types/history';
 import './HistoryEntry.scss';
 import classnames from 'classnames';
 
@@ -16,10 +16,17 @@ export interface IHistoryEntryState {
 export class HistoryEntry extends React.Component<IHistoryEntryProps, IHistoryEntryState> {
     private namesOfTypes: Record<HistoryType, (data?: IHistoryEntryData) => string> = {
         [HistoryType.OPEN]: () => `Open`,
-        [HistoryType.APPLY_FILTER]: (data = {}) => `Apply filter '${data.filterId}'`,
         [HistoryType.CROP]: () => 'Crop image',
-        [HistoryType.SET_BRIGHTNESS]: (data = {}) => `Set brightness to ${data.value}`,
-        [HistoryType.SET_CONTRAST]: (data = {}) => `Set contrast to ${data.value}`,
+        [HistoryType.ROTATE]: () => 'Rotate',
+        [HistoryType.BRIGHTNESS]: (data: IHistoryEntryData) => `Set brightness to ${data.value}`,
+        [HistoryType.CONTRAST]: (data: IHistoryEntryData) => `Set contrast to ${data.value}`,
+        [HistoryType.BLUR]: (data: IHistoryEntryData) => `Set contrast to ${data.value}`,
+        [HistoryType.GRAYSCALE]: (data: IHistoryEntryData) => `Set contrast to ${data.value}`,
+        [HistoryType.HUE_ROTATE]: (data: IHistoryEntryData) => `Set contrast to ${data.value}`,
+        [HistoryType.INVERT]: (data: IHistoryEntryData) => `Set contrast to ${data.value}`,
+        [HistoryType.SATURATE]: (data: IHistoryEntryData) => `Set contrast to ${data.value}`,
+        [HistoryType.SEPIA]: (data: IHistoryEntryData) => `Set contrast to ${data.value}`,
+        [HistoryType.FILTER]: (data: IHistoryEntryData) => `Apply filter '${data.filterId}'`,
     };
 
     private onClick = () => {

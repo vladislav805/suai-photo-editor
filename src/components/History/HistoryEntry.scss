@@ -7,13 +7,10 @@
     border-left: 6px solid transparent;
 
     @include non-select;
-
-    &:hover {
-        background: rgba($color: #bebebe, $alpha: .1);
-    }
+    @include hover-background;
 
     &__active {
-        border-left-color: rgba($color: white, $alpha: .1);
+        @include left-border-active;
     }
 
     &-id {

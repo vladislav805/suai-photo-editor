@@ -21,6 +21,7 @@ export interface IPanelProps {
     items: IPanelEntry[];
     type: 'vertical' | 'horizontal';
     name: string;
+    active?: number;
 }
 
 export interface IPanelState {}
@@ -34,7 +35,7 @@ export default class Panel extends React.Component<IPanelProps, IPanelState> {
                 this.props.name && 'panel--' + this.props.name,
             )}>
                 {(this.props.items || []).map((entry, i) => React.isValidElement(entry) ? entry : (
-                    <PanelItem key={i} entry={entry} />
+                    <PanelItem key={i} entry={entry} active={'tag' in entry && entry.tag === this.props.active} />
                 ))}
             </div>
         );
