@@ -7,7 +7,7 @@ import AsideBlock from '../AsideBlock';
 import History from '../History';
 import Range from '../Range';
 import { IHistoryEntry, HistoryType } from '../../types/history';
-import { mdiFolderOpenOutline, mdiContentSave, mdiBrightness4, mdiContrastBox, mdiImageFilterVintage, mdiRedo, mdiUndo, mdiMagnifyMinusOutline, mdiMagnifyPlusOutline, mdiSquareOutline, mdiFormatRotate90, mdiRelativeScale } from '@mdi/js';
+import { mdiCursorDefaultOutline, mdiFolderOpenOutline, mdiContentSave, mdiBrightness4, mdiContrastBox, mdiImageFilterVintage, mdiRedo, mdiUndo, mdiMagnifyMinusOutline, mdiMagnifyPlusOutline, mdiSquareOutline, mdiFormatRotate90, mdiRelativeScale } from '@mdi/js';
 import { Tool } from '../../types/tools';
 import { readFile, openChoosePhotoDialog } from '../../utils/files';
 import { createCanvasWithImage, saveCanvas } from '../../utils/canvas';
@@ -122,8 +122,27 @@ export default class App extends React.Component<{}, IAppState> {
     private onUndo = () => this.onEntryClick(this.state.historyIndex - 1);
     private onRedo = () => this.onEntryClick(this.state.historyIndex + 1);
 
-    private noop = () => {
-        // todo
+    private setTool = (activeTool: number) => this.setState({ activeTool });
+
+    private renderToolWindow = () => {
+        switch (this.state.activeTool) {
+            case Tool.BRIGHTNESS:
+                return 'set brightness';
+
+            case Tool.CONTRAST:
+                return 'set contrast';
+
+            case Tool.CROP:
+                return 'crop';
+
+            case Tool.ROTATE:
+                return 'rotate';
+
+            case Tool.FILTER:
+                return 'gallery of filters';
+        }
+
+        return null;
     };
 
     render() {
@@ -141,11 +160,12 @@ export default class App extends React.Component<{}, IAppState> {
                     name="tools"
                     type="vertical"
                     items={[
-                        { icon: mdiBrightness4, label: 'Brightness', onClick: this.noop, disabled },
-                        { icon: mdiContrastBox, label: 'Contrast', onClick: this.noop, disabled },
-//                        { icon: mdiCrop, label: 'Crop', onClick: this.noop, disabled },
-                        { icon: mdiFormatRotate90, label: 'Rotate to 90 deg', onClick: this.noop, disabled },
-                        { icon: mdiImageFilterVintage, label: 'Filters', onClick: this.noop, disabled }
+                        { icon: mdiCursorDefaultOutline, label: 'None', onClick: this.setTool, disabled, tag: Tool.NONE },
+                        { icon: mdiBrightness4, label: 'Brightness', onClick: this.setTool, disabled, tag: Tool.BRIGHTNESS },
+                        { icon: mdiContrastBox, label: 'Contrast', onClick: this.setTool, disabled, tag: Tool.CONTRAST },
+//                        { icon: mdiCrop, label: 'Crop', onClick: this.noop, disabled, tag: Tool.CROP },
+                        { icon: mdiFormatRotate90, label: 'Rotate to 90 deg', onClick: this.setTool, disabled, tag: Tool.ROTATE },
+                        { icon: mdiImageFilterVintage, label: 'Filters', onClick: this.setTool, disabled, tag: Tool.FILTER }
                     ]} />
                 <Panel
                     name="status"
@@ -190,6 +210,7 @@ export default class App extends React.Component<{}, IAppState> {
                             current={this.state.historyIndex}
                             onEntryClick={this.onEntryClick} />
                     </AsideBlock>
+                    {this.state.activeTool !== Tool.NONE && this.renderToolWindow()}
                 </div>
                 {this.state.history.length ? (
                     <Canvas

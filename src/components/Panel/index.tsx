@@ -6,8 +6,9 @@ import PanelItem from './PanelItem';
 export type IPanelButton = {
     icon?: string;
     label: string;
-    onClick: () => void;
+    onClick: (tag?: string | number) => void;
     disabled?: boolean;
+    tag?: string | number;
 };
 
 export type IPanelText = {

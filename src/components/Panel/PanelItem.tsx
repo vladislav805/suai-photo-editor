@@ -11,10 +11,11 @@ export type IPanelItemState = {};
 
 export default class PanelItem extends React.Component<IPanelItemProps, IPanelItemState> {
     private onClick = () => {
-        const entry = this.props.entry as IPanelButton;
+        const e = this.props.entry as IPanelButton;
+        const { disabled, onClick, tag } = e;
 
-        if (!entry.disabled) {
-            entry.onClick();
+        if (!disabled) {
+            onClick(tag);
         }
     };
 
