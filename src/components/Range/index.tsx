@@ -12,7 +12,7 @@ export interface IRangeProps {
 
 export default class Range extends React.Component<IRangeProps> {
     private onChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-        this.props.onChange && this.props.onChange(+event.target.value);
+        this.props.onChange?.(+event.target.value);
     };
 
     render() {

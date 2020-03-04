@@ -6,7 +6,7 @@ import classnames from 'classnames';
 export interface IHistoryEntryProps {
     entry: IHistoryEntry;
     active?: boolean;
-    onClick: (id: number) => void;
+    onClick?: (id: number) => void;
 }
 
 export interface IHistoryEntryState {
@@ -23,7 +23,7 @@ export class HistoryEntry extends React.Component<IHistoryEntryProps, IHistoryEn
     };
 
     private onClick = () => {
-        this.props.onClick(this.props.entry.id);
+        this.props.onClick?.(this.props.entry.id);
     };
 
     render() {

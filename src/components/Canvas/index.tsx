@@ -39,7 +39,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
 
     private connectorZoomFit = (args: Record<string, string | boolean | number>) => {
         if (args.fit) {
-            this.props.onChangeScale && this.props.onChangeScale(this.getDefaultScale());
+            this.props.onChangeScale?.(this.getDefaultScale());
         }
     };
 
