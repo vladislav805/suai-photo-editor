@@ -82,6 +82,7 @@ module.exports = {
             chunkFilename: '[id].css',
         }),
         new HtmlWebpackPlugin({
+            title: 'Photo editor',
             template: path.resolve('public', 'index.html'),
             chunks: ['main'],
             minify: true,
