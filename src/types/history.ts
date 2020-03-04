@@ -12,4 +12,5 @@ export interface IHistoryEntry {
     id: number;
     type: HistoryType;
     data?: IHistoryEntryData;
+    uri: string;
 }
