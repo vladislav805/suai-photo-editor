@@ -153,6 +153,7 @@ export default class App extends React.Component<{}, IAppState> {
     private onPreviewWillReset: OnPreviewWillReset = (callback: CallbackWithImageCanvas<void>) => this.createCallback(callback)
 
     private onApplyTool: OnApplyTool = async(callback: CallbackWithImageCanvas<HTMLImageElement>) => {
+        console.log('app.on_apply_tool')
         const image = await this.createCallback<HTMLImageElement>(callback, this.state.history[this.state.historyIndex].image);
         const history = [...this.state.history];
         history.length = this.state.historyIndex + 1;

@@ -23,12 +23,6 @@ export default abstract class RangeToolWindow extends React.Component<IRangeTool
         value: 1
     };
 
-    constructor(props: IRangeToolWindowProps) {
-        super(props);
-
-        // this.state = { value: this.ranges.defaultValue };
-    }
-
     componentDidMount() {
         this.ranges = this.getRanges();
         this.setState({
@@ -56,7 +50,7 @@ export default abstract class RangeToolWindow extends React.Component<IRangeTool
     protected abstract getRanges: () => IRangeValues;
     protected abstract getFilterName: () => string;
 
-    protected getFilterString = (value = this.state.value) => `${this.getFilterName()}(${value})`;
+    protected getFilterString = (value = this.state.value) => value !== undefined ? `${this.getFilterName()}(${value})` : '';
 
     private onChange = (value: number) => {
         this.setState({ value }, () => {
@@ -68,7 +62,7 @@ export default abstract class RangeToolWindow extends React.Component<IRangeTool
 
     private resetPreview = () => {
         this.props.onPreviewWillReset(image => {
-            image.style.filter = this.getFilterString(this.ranges.defaultValue);
+            image.style.filter = this.getFilterString(undefined);
         });
     };
 

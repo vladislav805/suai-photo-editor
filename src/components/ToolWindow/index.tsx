@@ -34,54 +34,61 @@ export default class ToolWindow extends React.Component<IToolWindowProps, IToolW
     };
 
     private renderTool = (): { title: string; view: React.ReactNode} => {
+        const args = {
+            ...this.props,
+            onApplyTool: (callback: CallbackWithImageCanvas<HTMLImageElement>) => {
+                this.props.onApplyTool(callback);
+                this.setState({ save: false });
+            }
+        };
         let title: string;
         let view: React.ReactNode;
         switch (this.props.tool) {
             case Tool.BRIGHTNESS: {
                 title = 'Brightness';
-                view = <BrightnessToolWindow {...this.props} save={this.state.save} />;
+                view = <BrightnessToolWindow {...args} save={this.state.save} />;
                 break;
             }
 
             case Tool.CONTRAST: {
                 title = 'Contrast';
-                view = <ContrastToolWindow {...this.props} save={this.state.save} />;
+                view = <ContrastToolWindow {...args} save={this.state.save} />;
                 break;
             }
 
             case Tool.BLUR: {
                 title = 'Blur';
-                view = <BlurToolWindow {...this.props} save={this.state.save} />;
+                view = <BlurToolWindow {...args} save={this.state.save} />;
                 break;
             }
 
             case Tool.GRAYSCALE: {
                 title = 'Grayscale';
-                view = <GrayscaleToolWindow {...this.props} save={this.state.save} />;
+                view = <GrayscaleToolWindow {...args} save={this.state.save} />;
                 break;
             }
 
             case Tool.HUE_ROTATE: {
                 title = 'Hue rotate';
-                view = <HueRotateToolWindow {...this.props} save={this.state.save} />;
+                view = <HueRotateToolWindow {...args} save={this.state.save} />;
                 break;
             }
 
             case Tool.INVERT: {
                 title = 'Invert';
-                view = <InvertToolWindow {...this.props} save={this.state.save} />;
+                view = <InvertToolWindow {...args} save={this.state.save} />;
                 break;
             }
 
             case Tool.SATURATE: {
                 title = 'Saturate';
-                view = <SaturateToolWindow {...this.props} save={this.state.save} />;
+                view = <SaturateToolWindow {...args} save={this.state.save} />;
                 break;
             }
 
             case Tool.SEPIA: {
                 title = 'Sepia';
-                view = <SepiaToolWindow {...this.props} save={this.state.save} />;
+                view = <SepiaToolWindow {...args} save={this.state.save} />;
                 break;
             }
 
