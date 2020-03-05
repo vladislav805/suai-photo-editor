@@ -1,20 +1,28 @@
 @import '../../mixins.scss';
 
-.tool-apply {
-    display: block;
-    background: transparent;
-    border: none;
-    color: white;
-    font-family: inherit;
-    padding: 0 15px;
-    line-height: 2.5;
-    transition: background ease-in-out .1s;
-    width: 100%;
+.tool {
+    &-empty {
+        text-align: center;
+        padding: 20px 0 ;
+        color: gray;
+    }
 
-    @include hover-background;
+    &-apply {
+        display: block;
+        background: transparent;
+        border: none;
+        color: white;
+        font-family: inherit;
+        padding: 0 15px;
+        line-height: 2.5;
+        transition: background ease-in-out .1s;
+        width: 100%;
 
-    svg {
-        margin-right: 15px;
-        vertical-align: middle;
+        @include hover-background;
+
+        svg {
+            margin-right: 15px;
+            vertical-align: middle;
+        }
     }
 }

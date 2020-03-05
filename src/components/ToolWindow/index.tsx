@@ -85,6 +85,12 @@ export default class ToolWindow extends React.Component<IToolWindowProps, IToolW
                 break;
             }
 
+            case Tool.NONE: {
+                title = 'Tool not selected';
+                view = <div className="tool-empty"><p>Tool not selected</p><p>Parameters not available</p></div>;
+                break;
+            }
+
             default: {
                 return null;
             }
@@ -109,13 +115,15 @@ export default class ToolWindow extends React.Component<IToolWindowProps, IToolW
         return (
             <AsideBlock title={title} open={true}>
                 {view}
-                <button className="tool-apply" onClick={this.applyTool}>
-                    <Icon
-                        path={mdiCheck}
-                        size={1}
-                        color={"white"} />
-                    <span>Apply</span>
-                </button>
+                {this.props.tool !== Tool.NONE ? (
+                    <button className="tool-apply" onClick={this.applyTool}>
+                        <Icon
+                            path={mdiCheck}
+                            size={1}
+                            color={"white"} />
+                        <span>Apply</span>
+                    </button>
+                ) : null}
             </AsideBlock>
         );
     }

@@ -148,7 +148,6 @@ export default class App extends React.Component<{}, IAppState> {
         return callback(sourceImage, await createCanvasWithImage(this.state.image.src)) as Promise<T>;
     }
 
-
     private onPreviewWillChange: OnPreviewWillChange = (callback: CallbackWithImageCanvas<void>) => this.createCallback(callback);
 
     private onPreviewWillReset: OnPreviewWillReset = (callback: CallbackWithImageCanvas<void>) => this.createCallback(callback)
@@ -223,6 +222,11 @@ export default class App extends React.Component<{}, IAppState> {
                             value={this.state.scale}
                             onChange={this.setScale} />
                     </AsideBlock>
+                    <ToolWindow
+                        tool={this.state.activeTool}
+                        onPreviewWillChange={this.onPreviewWillChange}
+                        onPreviewWillReset={this.onPreviewWillReset}
+                        onApplyTool={this.onApplyTool} />
                     <AsideBlock
                         title="History">
                         <Panel
@@ -238,13 +242,6 @@ export default class App extends React.Component<{}, IAppState> {
                             current={this.state.historyIndex}
                             onEntryClick={this.onEntryClick} />
                     </AsideBlock>
-                    {this.state.activeTool !== Tool.NONE && (
-                        <ToolWindow
-                            tool={this.state.activeTool}
-                            onPreviewWillChange={this.onPreviewWillChange}
-                            onPreviewWillReset={this.onPreviewWillReset}
-                            onApplyTool={this.onApplyTool} />
-                    )}
                 </div>
                 {this.state.history.length ? (
                     <Canvas
