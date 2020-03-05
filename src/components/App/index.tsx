@@ -7,7 +7,7 @@ import AsideBlock from '../AsideBlock';
 import History from '../History';
 import Range from '../Range';
 import { IHistoryEntry, HistoryType } from '../../types/history';
-import { mdiCursorDefaultOutline, mdiFolderOpenOutline, mdiContentSave, mdiBrightness4, mdiContrastBox, mdiImageFilterVintage, mdiRedo, mdiUndo, mdiMagnifyMinusOutline, mdiMagnifyPlusOutline, mdiSquareOutline, mdiFormatRotate90, mdiRelativeScale, mdiBlur, mdiCheck, mdiInvertColors } from '@mdi/js';
+import { mdiCursorDefaultOutline, mdiFolderOpenOutline, mdiContentSave, mdiBrightness4, mdiContrastBox, mdiImageFilterVintage, mdiRedo, mdiUndo, mdiMagnifyMinusOutline, mdiMagnifyPlusOutline, mdiSquareOutline, mdiFormatRotate90, mdiRelativeScale, mdiBlur, mdiInvertColors, mdiPaletteOutline, mdiAlphaS, mdiInvertColorsOff, mdiImageFilterTiltShift } from '@mdi/js';
 import { Tool } from '../../types/tools';
 import { readFile, openChoosePhotoDialog } from '../../utils/files';
 import { createCanvasWithImage, saveCanvas } from '../../utils/canvas';
@@ -15,7 +15,6 @@ import { ImageSize } from '../../types/image';
 import Connector from '../../utils/connector';
 import ToolWindow, { OnPreviewWillChange, OnPreviewWillReset, CallbackWithImageCanvas, OnApplyTool } from '../ToolWindow';
 import { makeImage } from '../../utils/image';
-import { throttle, Throttable } from '../../utils/throttle';
 
 interface IAppState {
     // File
@@ -187,11 +186,11 @@ export default class App extends React.Component<{}, IAppState> {
                         { icon: mdiBrightness4, label: 'Brightness', onClick: this.setTool, disabled, tag: Tool.BRIGHTNESS },
                         { icon: mdiContrastBox, label: 'Contrast', onClick: this.setTool, disabled, tag: Tool.CONTRAST },
                         { icon: mdiBlur, label: 'Blur', onClick: this.setTool, disabled, tag: Tool.BLUR },
-                        { icon: mdiCheck, label: 'Grayscale', onClick: this.setTool, disabled, tag: Tool.GRAYSCALE },
-                        { icon: mdiCheck, label: 'Hue rotate', onClick: this.setTool, disabled, tag: Tool.HUE_ROTATE },
+                        { icon: mdiInvertColorsOff, label: 'Grayscale', onClick: this.setTool, disabled, tag: Tool.GRAYSCALE },
+                        { icon: mdiImageFilterTiltShift, label: 'Hue rotate', onClick: this.setTool, disabled, tag: Tool.HUE_ROTATE },
                         { icon: mdiInvertColors, label: 'Invert', onClick: this.setTool, disabled, tag: Tool.INVERT  },
-                        { icon: mdiCheck, label: 'Saturate', onClick: this.setTool, disabled, tag: Tool.SATURATE  },
-                        { icon: mdiCheck, label: 'Sepia', onClick: this.setTool, disabled, tag: Tool.SEPIA },
+                        { icon: mdiPaletteOutline, label: 'Saturate', onClick: this.setTool, disabled, tag: Tool.SATURATE  },
+                        { icon: mdiAlphaS, label: 'Sepia', onClick: this.setTool, disabled, tag: Tool.SEPIA },
 //                        { icon: mdiCrop, label: 'Crop', onClick: this.noop, disabled, tag: Tool.CROP },
                         { icon: mdiFormatRotate90, label: 'Rotate to 90 deg', onClick: this.setTool, disabled, tag: Tool.ROTATE },
                         { icon: mdiImageFilterVintage, label: 'Filters', onClick: this.setTool, disabled, tag: Tool.FILTER }
