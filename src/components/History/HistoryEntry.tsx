@@ -20,12 +20,12 @@ export class HistoryEntry extends React.Component<IHistoryEntryProps, IHistoryEn
         [HistoryType.ROTATE]: () => 'Rotate',
         [HistoryType.BRIGHTNESS]: (data: IHistoryEntryData) => `Set brightness to ${data?.value}`,
         [HistoryType.CONTRAST]: (data: IHistoryEntryData) => `Set contrast to ${data?.value}`,
-        [HistoryType.BLUR]: (data: IHistoryEntryData) => `Set contrast to ${data?.value}`,
-        [HistoryType.GRAYSCALE]: (data: IHistoryEntryData) => `Set contrast to ${data?.value}`,
-        [HistoryType.HUE_ROTATE]: (data: IHistoryEntryData) => `Set contrast to ${data?.value}`,
-        [HistoryType.INVERT]: (data: IHistoryEntryData) => `Set contrast to ${data?.value}`,
-        [HistoryType.SATURATE]: (data: IHistoryEntryData) => `Set contrast to ${data?.value}`,
-        [HistoryType.SEPIA]: (data: IHistoryEntryData) => `Set contrast to ${data?.value}`,
+        [HistoryType.BLUR]: (data: IHistoryEntryData) => `Set blur to ${data?.value}`,
+        [HistoryType.GRAYSCALE]: (data: IHistoryEntryData) => `Set grayscale to ${data?.value}`,
+        [HistoryType.HUE_ROTATE]: (data: IHistoryEntryData) => `Set hue rotate to ${data?.value}`,
+        [HistoryType.INVERT]: (data: IHistoryEntryData) => `Set invert to ${data?.value}`,
+        [HistoryType.SATURATE]: (data: IHistoryEntryData) => `Set saturate to ${data?.value}`,
+        [HistoryType.SEPIA]: (data: IHistoryEntryData) => `Set sepia to ${data?.value}`,
         [HistoryType.FILTER]: (data: IHistoryEntryData) => `Apply filter '${data?.filterId}'`,
     };
 
