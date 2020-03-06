@@ -1,6 +1,5 @@
 export enum Tool {
     NONE,
-    CROP,
     ROTATE,
     BRIGHTNESS,
     CONTRAST,
@@ -10,5 +9,6 @@ export enum Tool {
     INVERT,
     SATURATE,
     SEPIA,
-    FILTER
+    FILTER,
+    SAVE
 }

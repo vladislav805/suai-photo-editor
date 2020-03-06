@@ -6,6 +6,7 @@ import { mdiCheck } from '@mdi/js';
 import Icon from '@mdi/react';
 import './styles.scss';
 import { BlurToolWindow, ContrastToolWindow, BrightnessToolWindow, HueRotateToolWindow, GrayscaleToolWindow, InvertToolWindow, SaturateToolWindow, SepiaToolWindow } from './range-tools';
+import RotateToolWindow from './RotateToolWindow';
 
 export type CallbackWithImageCanvas<T> = (image: HTMLImageElement, canvas: CanvasWithContext) => Promise<T> | void;
 export type OnPreviewWillChange = (callback: CallbackWithImageCanvas<void>) => void;
@@ -92,6 +93,12 @@ export default class ToolWindow extends React.Component<IToolWindowProps, IToolW
                 break;
             }
 
+            case Tool.ROTATE: {
+                title = 'Rotate';
+                view = <RotateToolWindow {...args} save={this.state.save} />;
+                break;
+            }
+
             case Tool.NONE: {
                 title = 'Tool not selected';
                 view = <div className="tool-empty"><p>Tool not selected</p><p>Parameters not available</p></div>;
@@ -106,9 +113,7 @@ export default class ToolWindow extends React.Component<IToolWindowProps, IToolW
         return { title, view };
     };
 
-    private applyTool = () => {
-        this.setState({ save: true });
-    };
+    private applyTool = () => this.setState({ save: true });
 
     render() {
         const tool = this.renderTool();

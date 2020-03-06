@@ -16,7 +16,6 @@ export interface IHistoryEntryState {
 export class HistoryEntry extends React.Component<IHistoryEntryProps, IHistoryEntryState> {
     private namesOfTypes: Record<HistoryType, (data?: IHistoryEntryData) => string> = {
         [HistoryType.OPEN]: () => `Open`,
-        [HistoryType.CROP]: () => 'Crop image',
         [HistoryType.ROTATE]: () => 'Rotate',
         [HistoryType.BRIGHTNESS]: (data: IHistoryEntryData) => `Set brightness to ${data?.value}`,
         [HistoryType.CONTRAST]: (data: IHistoryEntryData) => `Set contrast to ${data?.value}`,

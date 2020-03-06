@@ -1,6 +1,7 @@
+import { ImageSize } from './image';
+
 export enum HistoryType {
     OPEN,
-    CROP,
     ROTATE,
     BRIGHTNESS,
     CONTRAST,
@@ -21,4 +22,5 @@ export interface IHistoryEntry {
     data?: IHistoryEntryData;
     image: HTMLImageElement;
     uri: string;
+    dimens: ImageSize;
 }
