@@ -26,3 +26,33 @@
         }
     }
 }
+
+.save {
+    &-info {
+        display: flex;
+        flex-flow: row nowrap;
+
+        input,
+        select {
+            background: transparent;
+            color: inherit;
+            border: none;
+            border-bottom: 1px solid #cccccc;
+        }
+
+        option {
+            color: black;
+        }
+
+        input {
+            min-width: 0;
+            flex: 1;
+            line-height: 30px;
+            padding: 0 12px;
+        }
+    }
+
+    &-form p {
+        padding: 10px 12px 1px;
+    }
+}

@@ -7,13 +7,17 @@ import Icon from '@mdi/react';
 import './styles.scss';
 import { BlurToolWindow, ContrastToolWindow, BrightnessToolWindow, HueRotateToolWindow, GrayscaleToolWindow, InvertToolWindow, SaturateToolWindow, SepiaToolWindow } from './range-tools';
 import RotateToolWindow from './RotateToolWindow';
+import SaveToolWindow from './SaveToolWindow';
 
 export type CallbackWithImageCanvas<T> = (image: HTMLImageElement, canvas: CanvasWithContext) => Promise<T> | void;
 export type OnPreviewWillChange = (callback: CallbackWithImageCanvas<void>) => void;
 export type OnPreviewWillReset = (callback: CallbackWithImageCanvas<void>) => void;
 export type OnApplyTool = (callback: CallbackWithImageCanvas<HTMLImageElement>) => void;
 
-export type IToolWindowChildProps = IToolWindowChildCallbacks & { save?: boolean };
+export type IToolWindowChildProps = IToolWindowChildCallbacks & {
+    save?: boolean;
+    getButtonText?: (callback: string) => void;
+};
 
 type IToolWindowChildCallbacks = {
     onPreviewWillChange: OnPreviewWillChange;
@@ -27,11 +31,13 @@ export interface IToolWindowProps extends IToolWindowChildCallbacks {
 
 export interface IToolWindowState {
     save: boolean;
+    buttonText: string;
 }
 
 export default class ToolWindow extends React.Component<IToolWindowProps, IToolWindowState> {
     state: IToolWindowState = {
-        save: false
+        save: false,
+        buttonText: 'Apply'
     };
 
     private renderTool = (): { title: string; view: React.ReactNode} => {
@@ -40,7 +46,8 @@ export default class ToolWindow extends React.Component<IToolWindowProps, IToolW
             onApplyTool: (callback: CallbackWithImageCanvas<HTMLImageElement>) => {
                 this.props.onApplyTool(callback);
                 this.setState({ save: false });
-            }
+            },
+            getButtonText: (buttonText: string) => this.setState({ buttonText }),
         };
         let title: string;
         let view: React.ReactNode;
@@ -105,6 +112,12 @@ export default class ToolWindow extends React.Component<IToolWindowProps, IToolW
                 break;
             }
 
+            case Tool.SAVE: {
+                title = 'Save options';
+                view = <SaveToolWindow {...args} save={this.state.save} />;
+                break;
+            }
+
             default: {
                 return null;
             }
@@ -133,7 +146,7 @@ export default class ToolWindow extends React.Component<IToolWindowProps, IToolW
                             path={mdiCheck}
                             size={1}
                             color={"white"} />
-                        <span>Apply</span>
+                        <span>{this.state.buttonText}</span>
                     </button>
                 ) : null}
             </AsideBlock>
