@@ -7,10 +7,10 @@ import AsideBlock from '../AsideBlock';
 import History from '../History';
 import Range from '../Range';
 import { IHistoryEntry, HistoryType } from '../../types/history';
-import { mdiCursorDefaultOutline, mdiFolderOpenOutline, mdiContentSave, mdiBrightness4, mdiContrastBox, mdiImageFilterVintage, mdiRedo, mdiUndo, mdiMagnifyMinusOutline, mdiMagnifyPlusOutline, mdiSquareOutline, mdiFormatRotate90, mdiRelativeScale, mdiBlur, mdiInvertColors, mdiPaletteOutline, mdiAlphaS, mdiInvertColorsOff, mdiImageFilterTiltShift, mdiRotateLeft } from '@mdi/js';
+import { mdiCursorDefaultOutline, mdiFolderOpenOutline, mdiContentSave, mdiBrightness4, mdiContrastBox, mdiImageFilterVintage, mdiRedo, mdiUndo, mdiMagnifyMinusOutline, mdiMagnifyPlusOutline, mdiSquareOutline, mdiFormatRotate90, mdiRelativeScale, mdiBlur, mdiInvertColors, mdiPaletteOutline, mdiAlphaS, mdiInvertColorsOff, mdiImageFilterTiltShift } from '@mdi/js';
 import { Tool } from '../../types/tools';
 import { readFile, openChoosePhotoDialog } from '../../utils/files';
-import { createCanvasWithImage, saveCanvas } from '../../utils/canvas';
+import { createCanvasWithImage } from '../../utils/canvas';
 import { ImageSize } from '../../types/image';
 import Connector from '../../utils/connector';
 import ToolWindow, { OnPreviewWillChange, OnPreviewWillReset, CallbackWithImageCanvas, OnApplyTool } from '../ToolWindow';
@@ -114,17 +114,6 @@ export default class App extends React.Component<{}, IAppState> {
             history[state.historyIndex].image = image;
             return { history, image };
         });
-    };
-
-    private save = async() => {
-        const uri = this.state.history[this.state.historyIndex].uri;
-        const { canvas } = await createCanvasWithImage(uri);
-
-        const name = this.state.file.name;
-        const lastDot = name.lastIndexOf('.');
-
-        // TODO type and quality
-        saveCanvas(canvas, name.substring(0, lastDot), 'image/jpeg');
     };
 
     private setDeltaScale = (delta: number) => this.setScale(this.state.scale + delta * .03);
