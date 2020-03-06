@@ -26,3 +26,29 @@
         }
     }
 }
+
+.paint {
+    display: flex;
+    flex-flow: row nowrap;
+
+    &-color {
+        position: relative;
+        display: inline-block;
+        padding: 10px;
+        min-width: 40px;
+
+        input {
+            @include size(30px);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            border: none;
+            outline: none;
+        }
+
+        @include hover-background;
+    }
+
+    .range {
+        flex: 1;
+    }
+}

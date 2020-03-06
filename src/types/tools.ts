@@ -10,5 +10,6 @@ export enum Tool {
     INVERT,
     SATURATE,
     SEPIA,
+    PAINT,
     FILTER
 }

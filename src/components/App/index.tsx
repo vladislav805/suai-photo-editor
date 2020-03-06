@@ -7,7 +7,7 @@ import AsideBlock from '../AsideBlock';
 import History from '../History';
 import Range from '../Range';
 import { IHistoryEntry, HistoryType } from '../../types/history';
-import { mdiCursorDefaultOutline, mdiFolderOpenOutline, mdiContentSave, mdiBrightness4, mdiContrastBox, mdiImageFilterVintage, mdiRedo, mdiUndo, mdiMagnifyMinusOutline, mdiMagnifyPlusOutline, mdiSquareOutline, mdiFormatRotate90, mdiRelativeScale, mdiBlur, mdiInvertColors, mdiPaletteOutline, mdiAlphaS, mdiInvertColorsOff, mdiImageFilterTiltShift } from '@mdi/js';
+import { mdiCursorDefaultOutline, mdiFolderOpenOutline, mdiContentSave, mdiBrightness4, mdiContrastBox, mdiImageFilterVintage, mdiRedo, mdiUndo, mdiMagnifyMinusOutline, mdiMagnifyPlusOutline, mdiSquareOutline, mdiFormatRotate90, mdiRelativeScale, mdiBlur, mdiInvertColors, mdiPaletteOutline, mdiAlphaS, mdiInvertColorsOff, mdiImageFilterTiltShift, mdiCrop, mdiLeadPencil } from '@mdi/js';
 import { Tool } from '../../types/tools';
 import { readFile, openChoosePhotoDialog } from '../../utils/files';
 import { createCanvasWithImage, saveCanvas } from '../../utils/canvas';
@@ -191,9 +191,10 @@ export default class App extends React.Component<{}, IAppState> {
                         { icon: mdiInvertColors, label: 'Invert', onClick: this.setTool, disabled, tag: Tool.INVERT  },
                         { icon: mdiPaletteOutline, label: 'Saturate', onClick: this.setTool, disabled, tag: Tool.SATURATE  },
                         { icon: mdiAlphaS, label: 'Sepia', onClick: this.setTool, disabled, tag: Tool.SEPIA },
-//                        { icon: mdiCrop, label: 'Crop', onClick: this.noop, disabled, tag: Tool.CROP },
+                        { icon: mdiCrop, label: 'Crop', onClick: this.setTool, disabled, tag: Tool.CROP },
+                        { icon: mdiLeadPencil, label: 'Paint', onClick: this.setTool, disabled, tag: Tool.PAINT },
                         { icon: mdiFormatRotate90, label: 'Rotate to 90 deg', onClick: this.setTool, disabled, tag: Tool.ROTATE },
-                        { icon: mdiImageFilterVintage, label: 'Filters', onClick: this.setTool, disabled, tag: Tool.FILTER }
+                        { icon: mdiImageFilterVintage, label: 'Filters', onClick: this.setTool, disabled, tag: Tool.FILTER },
                     ]} />
                 <Panel
                     name="status"

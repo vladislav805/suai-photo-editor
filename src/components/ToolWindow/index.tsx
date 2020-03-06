@@ -6,6 +6,7 @@ import { mdiCheck } from '@mdi/js';
 import Icon from '@mdi/react';
 import './styles.scss';
 import { BlurToolWindow, ContrastToolWindow, BrightnessToolWindow, HueRotateToolWindow, GrayscaleToolWindow, InvertToolWindow, SaturateToolWindow, SepiaToolWindow } from './range-tools';
+import PaintToolWindow from './PaintToolWindow';
 
 export type CallbackWithImageCanvas<T> = (image: HTMLImageElement, canvas: CanvasWithContext) => Promise<T> | void;
 export type OnPreviewWillChange = (callback: CallbackWithImageCanvas<void>) => void;
@@ -89,6 +90,12 @@ export default class ToolWindow extends React.Component<IToolWindowProps, IToolW
             case Tool.SEPIA: {
                 title = 'Sepia';
                 view = <SepiaToolWindow {...args} save={this.state.save} />;
+                break;
+            }
+
+            case Tool.PAINT: {
+                title = 'Paint';
+                view = <PaintToolWindow {...args} save={this.state.save} />;
                 break;
             }
 

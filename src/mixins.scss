@@ -17,3 +17,8 @@
 @mixin left-border-active($alpha: .4) {
     border-left-color: rgba($color: white, $alpha: $alpha);
 }
+
+@mixin size($width, $height: $width) {
+    width: $width;
+    height: $height;
+}
