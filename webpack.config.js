@@ -8,6 +8,21 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const mode = isProduction ? 'production' : 'development';
 
+const progressLineSymbols = ['▏','▎','▍','▌','▋','▊','▉', '█'];
+const getProgressLine = length => !isProduction ? () => {} : percent => {
+    if (percent === 1) {
+        process.stdout.clearLine && process.stdout.clearLine(0);
+        process.stdout.write('\rSuccessfully completed')
+        return;
+    }
+
+    const full = ~~(percent * length);
+    const chapter = ~~(1 / length * progressLineSymbols.length);
+
+    let str = '█'.repeat(full) + progressLineSymbols[chapter] + ' '.repeat(Math.max(length - full - 1, 0));
+    process.stdout.write(`\r[${str}] ${~~(percent * 100)}%`);
+};
+
 module.exports = {
     mode,
 
@@ -30,8 +45,8 @@ module.exports = {
                     {
                         loader: require.resolve('awesome-typescript-loader'),
                         options: {
-                            // compile with TypeScript, then transpile with Babel
                             useBabel: true,
+                            silent: isProduction,
                         },
                     },
                 ],
@@ -70,6 +85,7 @@ module.exports = {
     },
 
     plugins: [
+        new webpack.ProgressPlugin(getProgressLine(50)),
         new webpack.LoaderOptionsPlugin({
             minimize: true,
             debug: false
