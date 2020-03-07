@@ -62,7 +62,7 @@ export default abstract class RangeToolWindow extends React.Component<IRangeTool
 
     private resetPreview = () => {
         this.props.onPreviewWillReset(image => {
-            image.style.filter = this.getFilterString(undefined);
+            image.style.filter = '';
         });
     };
 
