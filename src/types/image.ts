@@ -3,4 +3,4 @@ export type ImageSize = {
     height: number;
 };
 
-export type ImageType = 'image/jpeg' | 'image/png' | 'image/webp';
+export type ImageType = 'image/jpeg' | 'image/png' | 'image/bmp';

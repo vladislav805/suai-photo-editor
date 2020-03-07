@@ -1,0 +1,58 @@
+@import '../../mixins.scss';
+
+.tool {
+    &-empty {
+        text-align: center;
+        padding: 20px 0;
+        color: gray;
+    }
+
+    &-apply {
+        display: block;
+        background: transparent;
+        border: none;
+        color: white;
+        font-family: inherit;
+        padding: 0 15px;
+        line-height: 2.5;
+        transition: background ease-in-out .1s;
+        width: 100%;
+
+        @include hover-background;
+
+        svg {
+            margin-right: 15px;
+            vertical-align: middle;
+        }
+    }
+}
+
+.save {
+    &-info {
+        display: flex;
+        flex-flow: row nowrap;
+
+        input,
+        select {
+            background: transparent;
+            color: inherit;
+            border: none;
+            border-bottom: 1px solid #cccccc;
+        }
+
+        option {
+            color: black;
+        }
+
+        input {
+            min-width: 0;
+            flex: 1;
+            line-height: 30px;
+            padding: 0 12px;
+        }
+    }
+
+    &-form p {
+        padding: 10px 12px 1px;
+    }
+}

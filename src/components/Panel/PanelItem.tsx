@@ -5,6 +5,7 @@ import Icon from '@mdi/react';
 
 export interface IPanelItemProps {
     entry: IPanelEntry;
+    active?: boolean;
 }
 
 export type IPanelItemState = {};
@@ -31,11 +32,13 @@ export default class PanelItem extends React.Component<IPanelItemProps, IPanelIt
         }
 
         const { icon, label, disabled } = entry as unknown as IPanelButton;
+        const active = 'active' in this.props && this.props.active;
 
         return (
             <div
                 className={classnames('panel-button', {
-                    'panel-button__disabled': disabled
+                    'panel-button__disabled': disabled,
+                    'panel-button__active': active
                 })}
                 onClick={this.onClick}>
                 <div className="panel-button-label">{label}</div>

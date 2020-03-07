@@ -7,12 +7,14 @@ import AsideBlock from '../AsideBlock';
 import History from '../History';
 import Range from '../Range';
 import { IHistoryEntry, HistoryType } from '../../types/history';
-import { mdiCursorDefaultOutline, mdiFolderOpenOutline, mdiContentSave, mdiBrightness4, mdiContrastBox, mdiImageFilterVintage, mdiRedo, mdiUndo, mdiMagnifyMinusOutline, mdiMagnifyPlusOutline, mdiSquareOutline, mdiFormatRotate90, mdiRelativeScale } from '@mdi/js';
+import { mdiCursorDefaultOutline, mdiFolderOpenOutline, mdiContentSave, mdiBrightness4, mdiContrastBox, mdiImageFilterVintage, mdiRedo, mdiUndo, mdiMagnifyMinusOutline, mdiMagnifyPlusOutline, mdiSquareOutline, mdiFormatRotate90, mdiRelativeScale, mdiBlur, mdiInvertColors, mdiPaletteOutline, mdiAlphaS, mdiInvertColorsOff, mdiImageFilterTiltShift } from '@mdi/js';
 import { Tool } from '../../types/tools';
 import { readFile, openChoosePhotoDialog } from '../../utils/files';
-import { createCanvasWithImage, saveCanvas } from '../../utils/canvas';
+import { createCanvasWithImage } from '../../utils/canvas';
 import { ImageSize } from '../../types/image';
 import Connector from '../../utils/connector';
+import ToolWindow, { OnPreviewWillChange, OnPreviewWillReset, CallbackWithImageCanvas, OnApplyTool } from '../ToolWindow';
+import { makeImage } from '../../utils/image';
 
 interface IAppState {
     // File
@@ -86,24 +88,32 @@ export default class App extends React.Component<{}, IAppState> {
     /**
      * Open image and render some canvases
      */
-    private renderImage = () => {
+    private renderImage = async() => {
         const { naturalWidth, naturalHeight, src } = this.state.image;
 
         this.setState({
-            history: [...this.state.history, { id: 0, type: HistoryType.OPEN, uri: src }],
-            imageSize: { width: naturalWidth, height: naturalHeight }
+            history: [
+                ...this.state.history,
+                {
+                    id: 0,
+                    type: HistoryType.OPEN,
+                    uri: src,
+                    image: await makeImage(src),
+                    dimens: { width: naturalWidth, height: naturalHeight }
+                }],
+            imageSize: {
+                width: naturalWidth,
+                height: naturalHeight
+            }
         });
     };
 
-    private save = async() => {
-        const uri = this.state.history[this.state.historyIndex].uri;
-        const { canvas } = await createCanvasWithImage(uri);
-
-        const name = this.state.file.name;
-        const lastDot = name.lastIndexOf('.');
-
-        // TODO type and quality
-        saveCanvas(canvas, name.substring(0, lastDot), 'image/jpeg');
+    private onPreviewReady = (image: HTMLImageElement) => {
+        this.setState(state => {
+            const history = [...state.history];
+            history[state.historyIndex].image = image;
+            return { history, image };
+        });
     };
 
     private setDeltaScale = (delta: number) => this.setScale(this.state.scale + delta * .03);
@@ -124,29 +134,40 @@ export default class App extends React.Component<{}, IAppState> {
 
     private setTool = (activeTool: number) => this.setState({ activeTool });
 
-    private renderToolWindow = () => {
-        switch (this.state.activeTool) {
-            case Tool.BRIGHTNESS:
-                return 'set brightness';
+    private createCallback = async function<T>(callback: CallbackWithImageCanvas<T>, sourceImage = this.state.image): Promise<T> {
+        return callback(sourceImage, await createCanvasWithImage(this.state.image.src)) as Promise<T>;
+    }
 
-            case Tool.CONTRAST:
-                return 'set contrast';
+    private onPreviewWillChange: OnPreviewWillChange = (callback: CallbackWithImageCanvas<void>) => this.createCallback(callback);
 
-            case Tool.CROP:
-                return 'crop';
+    private onPreviewWillReset: OnPreviewWillReset = (callback: CallbackWithImageCanvas<void>) => this.createCallback(callback)
 
-            case Tool.ROTATE:
-                return 'rotate';
+    private onApplyTool: OnApplyTool = async(callback: CallbackWithImageCanvas<HTMLImageElement>) => {
+        const image = await this.createCallback<HTMLImageElement>(callback, this.state.history[this.state.historyIndex].image);
+        const history = [...this.state.history];
 
-            case Tool.FILTER:
-                return 'gallery of filters';
+        let imageSize = { ...this.state.imageSize };
+
+        if (this.state.activeTool === Tool.ROTATE) {
+            imageSize = { width: image.naturalWidth, height: image.naturalHeight };
         }
 
-        return null;
+        history.length = this.state.historyIndex + 1;
+        history.push({ id: history.length, type: +this.state.activeTool, uri: image.src, image, dimens: imageSize });
+
+        this.setState({
+            imageSize,
+            history,
+            historyIndex: history.length - 1,
+            activeTool: Tool.NONE,
+        });
     };
 
     render() {
-        const disabled = !this.state.image;
+        const { image, scale, history, historyIndex, activeTool, imageSize } = this.state;
+        const disabled = !image;
+
+        const lastAction = history[historyIndex];
         return (
             <div className="app">
                 <Panel
@@ -154,17 +175,23 @@ export default class App extends React.Component<{}, IAppState> {
                     type="horizontal"
                     items={[
                         { label: 'Open', icon: mdiFolderOpenOutline, onClick: this.open },
-                        { label: 'Save', icon: mdiContentSave, onClick: this.save, disabled },
+                        { label: 'Save', icon: mdiContentSave, onClick: this.setTool, disabled, tag: Tool.SAVE },
                     ]} />
                 <Panel
                     name="tools"
                     type="vertical"
+                    active={activeTool}
                     items={[
                         { icon: mdiCursorDefaultOutline, label: 'None', onClick: this.setTool, disabled, tag: Tool.NONE },
                         { icon: mdiBrightness4, label: 'Brightness', onClick: this.setTool, disabled, tag: Tool.BRIGHTNESS },
                         { icon: mdiContrastBox, label: 'Contrast', onClick: this.setTool, disabled, tag: Tool.CONTRAST },
-//                        { icon: mdiCrop, label: 'Crop', onClick: this.noop, disabled, tag: Tool.CROP },
-                        { icon: mdiFormatRotate90, label: 'Rotate to 90 deg', onClick: this.setTool, disabled, tag: Tool.ROTATE },
+                        { icon: mdiBlur, label: 'Blur', onClick: this.setTool, disabled, tag: Tool.BLUR },
+                        { icon: mdiInvertColorsOff, label: 'Grayscale', onClick: this.setTool, disabled, tag: Tool.GRAYSCALE },
+                        { icon: mdiImageFilterTiltShift, label: 'Hue rotate', onClick: this.setTool, disabled, tag: Tool.HUE_ROTATE },
+                        { icon: mdiInvertColors, label: 'Invert', onClick: this.setTool, disabled, tag: Tool.INVERT  },
+                        { icon: mdiPaletteOutline, label: 'Saturate', onClick: this.setTool, disabled, tag: Tool.SATURATE  },
+                        { icon: mdiAlphaS, label: 'Sepia', onClick: this.setTool, disabled, tag: Tool.SEPIA },
+                        { icon: mdiFormatRotate90, label: 'Rotation', onClick: this.setTool, disabled, tag: Tool.ROTATE },
                         { icon: mdiImageFilterVintage, label: 'Filters', onClick: this.setTool, disabled, tag: Tool.FILTER }
                     ]} />
                 <Panel
@@ -184,7 +211,7 @@ export default class App extends React.Component<{}, IAppState> {
                                 { label: 'Reset', icon: mdiSquareOutline, onClick: this.scaleReset, disabled },
                                 { label: 'Fit', icon: mdiRelativeScale, onClick: this.scaleFit, disabled },
                                 { label: 'Zoom in', icon: mdiMagnifyPlusOutline, onClick: this.scaleIn, disabled },
-                                { text: `${~~(this.state.scale * 100)}%`}
+                                { text: `${~~(scale * 100)}%`}
                             ]}
                         />
                         <Range
@@ -192,32 +219,37 @@ export default class App extends React.Component<{}, IAppState> {
                             min={SCALE_MIN}
                             max={SCALE_MAX}
                             step={SCALE_STEP}
-                            value={this.state.scale}
+                            value={scale}
                             onChange={this.setScale} />
                     </AsideBlock>
+                    <ToolWindow
+                        tool={activeTool}
+                        onPreviewWillChange={this.onPreviewWillChange}
+                        onPreviewWillReset={this.onPreviewWillReset}
+                        onApplyTool={this.onApplyTool} />
                     <AsideBlock
                         title="History">
                         <Panel
                             name="history"
                             type="horizontal"
                             items={[
-                                { label: 'Undo', icon: mdiUndo, onClick: this.onUndo, disabled: this.state.historyIndex - 1 < 0 },
-                                { label: 'Redo', icon: mdiRedo, onClick: this.onRedo, disabled: this.state.historyIndex + 1 >= this.state.history.length },
+                                { label: 'Undo', icon: mdiUndo, onClick: this.onUndo, disabled: historyIndex - 1 < 0 },
+                                { label: 'Redo', icon: mdiRedo, onClick: this.onRedo, disabled: historyIndex + 1 >= history.length },
                             ]}
                         />
                         <History
-                            entries={this.state.history}
-                            current={this.state.historyIndex}
+                            entries={history}
+                            current={historyIndex}
                             onEntryClick={this.onEntryClick} />
                     </AsideBlock>
-                    {this.state.activeTool !== Tool.NONE && this.renderToolWindow()}
                 </div>
-                {this.state.history.length ? (
+                {history.length ? (
                     <Canvas
-                        imageUri={this.state.history[this.state.historyIndex].uri}
-                        imageSize={this.state.imageSize}
-                        scale={this.state.scale}
-                        onChangeScale={this.setScale} />
+                        imageUri={lastAction.uri}
+                        imageSize={lastAction.dimens || imageSize}
+                        scale={scale}
+                        onChangeScale={this.setScale}
+                        onPreviewReady={this.onPreviewReady} />
                 ) : <div className="panel--image" />}
             </div>
         );

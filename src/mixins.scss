@@ -7,3 +7,13 @@
     -moz-pointer-events: none;
     pointer-events: none;
 }
+
+@mixin hover-background {
+    &:hover {
+        background: rgba($color: #cccccc, $alpha: .1);
+    }
+}
+
+@mixin left-border-active($alpha: .4) {
+    border-left-color: rgba($color: white, $alpha: $alpha);
+}
