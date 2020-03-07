@@ -8,6 +8,7 @@ import './styles.scss';
 import { BlurToolWindow, ContrastToolWindow, BrightnessToolWindow, HueRotateToolWindow, GrayscaleToolWindow, InvertToolWindow, SaturateToolWindow, SepiaToolWindow } from './range-tools';
 import RotateToolWindow from './RotateToolWindow';
 import SaveToolWindow from './SaveToolWindow';
+import FiltersToolWindow from './FiltersToolWindow';
 
 export type CallbackWithImageCanvas<T> = (image: HTMLImageElement, canvas: CanvasWithContext) => Promise<T> | void;
 export type OnPreviewWillChange = (callback: CallbackWithImageCanvas<void>) => void;
@@ -27,6 +28,7 @@ type IToolWindowChildCallbacks = {
 
 export interface IToolWindowProps extends IToolWindowChildCallbacks {
     tool: Tool;
+    image: HTMLImageElement;
 }
 
 export interface IToolWindowState {
@@ -115,6 +117,12 @@ export default class ToolWindow extends React.Component<IToolWindowProps, IToolW
             case Tool.SAVE: {
                 title = 'Save options';
                 view = <SaveToolWindow {...args} save={this.state.save} />;
+                break;
+            }
+
+            case Tool.FILTER: {
+                title = 'Filter gallery';
+                view = <FiltersToolWindow {...args} save={this.state.save} />;
                 break;
             }
 
