@@ -1,0 +1,35 @@
+@import '../../mixins.scss';
+
+.filter {
+    width: 50%;
+    padding: 6px 12px;
+    cursor: pointer;
+
+    @include hover-background;
+
+    &-list {
+        display: flex;
+        flex-flow: row wrap;
+    }
+
+    &-name {
+        text-align: center;
+        line-height: 20px;
+        font-weight: bolder;
+    }
+
+    &-preview {
+        position: relative;
+        height: 0;
+
+        img {
+            display: block;
+            max-width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    }
+}

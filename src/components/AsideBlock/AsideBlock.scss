@@ -41,8 +41,8 @@
         };
 
         .asideBlock__open & {
-            max-height: 500px;
-            overflow: unset;
+            max-height: 300px;
+            overflow: auto;
         }
     }
 }

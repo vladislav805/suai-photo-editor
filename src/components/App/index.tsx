@@ -224,6 +224,7 @@ export default class App extends React.Component<{}, IAppState> {
                     </AsideBlock>
                     <ToolWindow
                         tool={activeTool}
+                        image={this.state.image}
                         onPreviewWillChange={this.onPreviewWillChange}
                         onPreviewWillReset={this.onPreviewWillReset}
                         onApplyTool={this.onApplyTool} />
