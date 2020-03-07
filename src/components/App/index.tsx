@@ -74,33 +74,27 @@ export default class App extends React.Component<{}, IAppState> {
         }
 
         image.src = await readFile(file);
-        image.onload = () => this.renderImage();
-
-        this.setState({ file, image });
-        this.resetHistory();
+        image.onload = () => this.renderImage({ file, image });
     };
-
-    /**
-     * Reset history
-     */
-    private resetHistory = () => this.setState({ history: [], historyIndex: 0 });
 
     /**
      * Open image and render some canvases
      */
-    private renderImage = async() => {
-        const { naturalWidth, naturalHeight, src } = this.state.image;
+    private renderImage = async({ file, image }: { file: File; image: HTMLImageElement }) => {
+        const { naturalWidth, naturalHeight, src } = image;
 
         this.setState({
+            file,
+            image,
             history: [
-                ...this.state.history,
                 {
                     id: 0,
                     type: HistoryType.OPEN,
                     uri: src,
                     image: await makeImage(src),
                     dimens: { width: naturalWidth, height: naturalHeight }
-                }],
+                }
+            ],
             imageSize: {
                 width: naturalWidth,
                 height: naturalHeight
