@@ -122,7 +122,7 @@ export default class App extends React.Component<{}, IAppState> {
         Connector.getInstance().fire('zoom', { fit: true });
     };
 
-    private onEntryClick = (id: number) => this.setState({ historyIndex: id });
+    private onEntryClick = (id: number) => this.setState({ historyIndex: id, activeTool: Tool.NONE });
     private onUndo = () => this.onEntryClick(this.state.historyIndex - 1);
     private onRedo = () => this.onEntryClick(this.state.historyIndex + 1);
 
