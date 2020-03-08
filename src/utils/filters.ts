@@ -169,9 +169,9 @@ const saturation: FilterFx = createFilter(bundle => {
     const RB = .0820;
 
     const R = [
-        [ (1 - level) * RW + level, (1 - level) * RW,         (1 - level) * RW ], // R
-        [ (1 - level) * RG,         (1 - level) * RG + level, (1 - level) * RG ], // G
-        [ (1 - level) * RB,         (1 - level) * RB,         (1 - level) * RB + level ] // B
+        [ (1 - level) * RW, (1 - level) * RW, (1 - level) * RW ], // R
+        [ (1 - level) * RG, (1 - level) * RG, (1 - level) * RG ], // G
+        [ (1 - level) * RB, (1 - level) * RB, (1 - level) * RB ], // B
     ];
 
     for (let i = 0; i < R.length; ++i) {
