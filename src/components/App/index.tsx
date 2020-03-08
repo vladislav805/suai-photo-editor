@@ -55,11 +55,65 @@ export default class App extends React.Component<{}, IAppState> {
         super(props);
     }
 
+    componentDidMount() {
+        window.addEventListener('keydown', this.onKeyDown);
+    }
+
     componentDidUpdate(_prevProps: {}, prevState: IAppState) {
         if (this.state.scale !== prevState.scale) {
             StatusController.getInstance().temporary(`Scale to ${~~(this.state.scale * 100)}%`)
         }
     }
+
+    private onKeyDown = (event: KeyboardEvent) => {
+        const { ctrlKey, shiftKey, code } = event;
+
+        type Fx = () => void;
+
+        const toolKeys: Record<string, Tool | Fx> = {
+            KeyS: Tool.SAVE,
+            KeyF: Tool.FILTER,
+            KeyC: Tool.CONTRAST,
+            KeyG: Tool.GRAYSCALE,
+            KeyB: Tool.BRIGHTNESS,
+            KeyH: Tool.HUE_ROTATE,
+            KeyI: Tool.INVERT,
+            KeyR: Tool.ROTATE,
+            KeyT: Tool.SATURATE,
+            KeyP: Tool.SEPIA,
+            KeyZ: () => !shiftKey ? this.onUndo() : this.onRedo(),
+        };
+
+        if (ctrlKey && code in toolKeys) {
+            event.preventDefault();
+            if (typeof toolKeys[event.code] === 'function') {
+                (toolKeys[code] as Fx)();
+            } else {
+                this.setState({ activeTool: toolKeys[code] as Tool });
+            }
+            return;
+        }
+
+        switch (event.code) {
+            case "NumpadAdd": {
+                event.preventDefault();
+                this.scaleIn();
+                break;
+            }
+
+            case "NumpadSubtract": {
+                event.preventDefault();
+                this.scaleOut();
+                break;
+            }
+
+            case "KeyO": {
+                event.preventDefault();
+                ctrlKey && this.open();
+                break;
+            }
+        }
+    };
 
     /**
      * Open dialog for choose file
@@ -123,8 +177,8 @@ export default class App extends React.Component<{}, IAppState> {
     };
 
     private onEntryClick = (id: number) => this.setState({ historyIndex: id, activeTool: Tool.NONE });
-    private onUndo = () => this.onEntryClick(this.state.historyIndex - 1);
-    private onRedo = () => this.onEntryClick(this.state.historyIndex + 1);
+    private onUndo = () => this.onEntryClick(Math.max(this.state.historyIndex - 1, 0));
+    private onRedo = () => this.onEntryClick(Math.min(this.state.historyIndex + 1, this.state.history.length - 1));
 
     private setTool = (activeTool: number) => this.setState({ activeTool });
 
