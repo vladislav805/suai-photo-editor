@@ -55,11 +55,67 @@ export default class App extends React.Component<{}, IAppState> {
         super(props);
     }
 
+    componentDidMount() {
+        window.addEventListener('keydown', this.onKeyDown);
+    }
+
     componentDidUpdate(_prevProps: {}, prevState: IAppState) {
         if (this.state.scale !== prevState.scale) {
             StatusController.getInstance().temporary(`Scale to ${~~(this.state.scale * 100)}%`)
         }
     }
+
+    private onKeyDown = (event: KeyboardEvent) => {
+        const { ctrlKey, shiftKey, code } = event;
+
+        type Fx = () => void;
+
+        const toolKeys: Record<string, Tool | Fx> = {
+            KeyS: Tool.SAVE,
+            KeyE: Tool.BLUR,
+            KeyQ: Tool.NONE,
+            KeyF: Tool.FILTER,
+            KeyC: Tool.CONTRAST,
+            KeyG: Tool.GRAYSCALE,
+            KeyB: Tool.BRIGHTNESS,
+            KeyH: Tool.HUE_ROTATE,
+            KeyI: Tool.INVERT,
+            KeyR: Tool.ROTATE,
+            KeyU: Tool.SATURATE,
+            KeyP: Tool.SEPIA,
+            KeyZ: () => !shiftKey ? this.onUndo() : this.onRedo(),
+        };
+
+        if (ctrlKey && this.state.file && code in toolKeys) {
+            event.preventDefault();
+            if (typeof toolKeys[event.code] === 'function') {
+                (toolKeys[code] as Fx)();
+            } else {
+                this.setState({ activeTool: toolKeys[code] as Tool });
+            }
+            return;
+        }
+
+        switch (event.code) {
+            case "NumpadAdd": {
+                event.preventDefault();
+                this.scaleIn();
+                break;
+            }
+
+            case "NumpadSubtract": {
+                event.preventDefault();
+                this.scaleOut();
+                break;
+            }
+
+            case "KeyO": {
+                event.preventDefault();
+                ctrlKey && this.open();
+                break;
+            }
+        }
+    };
 
     /**
      * Open dialog for choose file
@@ -123,8 +179,8 @@ export default class App extends React.Component<{}, IAppState> {
     };
 
     private onEntryClick = (id: number) => this.setState({ historyIndex: id, activeTool: Tool.NONE });
-    private onUndo = () => this.onEntryClick(this.state.historyIndex - 1);
-    private onRedo = () => this.onEntryClick(this.state.historyIndex + 1);
+    private onUndo = () => this.onEntryClick(Math.max(this.state.historyIndex - 1, 0));
+    private onRedo = () => this.onEntryClick(Math.min(this.state.historyIndex + 1, this.state.history.length - 1));
 
     private setTool = (activeTool: number) => this.setState({ activeTool });
 
@@ -168,25 +224,25 @@ export default class App extends React.Component<{}, IAppState> {
                     name="file"
                     type="horizontal"
                     items={[
-                        { label: 'Open', icon: mdiFolderOpenOutline, onClick: this.open },
-                        { label: 'Save', icon: mdiContentSave, onClick: this.setTool, disabled, tag: Tool.SAVE },
+                        { label: 'Open (Ctrl+O)', icon: mdiFolderOpenOutline, onClick: this.open },
+                        { label: 'Save (Ctrl+S)', icon: mdiContentSave, onClick: this.setTool, disabled, tag: Tool.SAVE },
                     ]} />
                 <Panel
                     name="tools"
                     type="vertical"
                     active={activeTool}
                     items={[
-                        { icon: mdiCursorDefaultOutline, label: 'None', onClick: this.setTool, disabled, tag: Tool.NONE },
-                        { icon: mdiBrightness4, label: 'Brightness', onClick: this.setTool, disabled, tag: Tool.BRIGHTNESS },
-                        { icon: mdiContrastBox, label: 'Contrast', onClick: this.setTool, disabled, tag: Tool.CONTRAST },
-                        { icon: mdiBlur, label: 'Blur', onClick: this.setTool, disabled, tag: Tool.BLUR },
-                        { icon: mdiInvertColorsOff, label: 'Grayscale', onClick: this.setTool, disabled, tag: Tool.GRAYSCALE },
-                        { icon: mdiImageFilterTiltShift, label: 'Hue rotate', onClick: this.setTool, disabled, tag: Tool.HUE_ROTATE },
-                        { icon: mdiInvertColors, label: 'Invert', onClick: this.setTool, disabled, tag: Tool.INVERT  },
-                        { icon: mdiPaletteOutline, label: 'Saturate', onClick: this.setTool, disabled, tag: Tool.SATURATE  },
-                        { icon: mdiAlphaS, label: 'Sepia', onClick: this.setTool, disabled, tag: Tool.SEPIA },
-                        { icon: mdiFormatRotate90, label: 'Rotation', onClick: this.setTool, disabled, tag: Tool.ROTATE },
-                        { icon: mdiImageFilterVintage, label: 'Filters', onClick: this.setTool, disabled, tag: Tool.FILTER }
+                        { icon: mdiCursorDefaultOutline, label: 'None (Ctrl+Q)', onClick: this.setTool, disabled, tag: Tool.NONE },
+                        { icon: mdiBrightness4, label: 'Brightness (Ctrl+B)', onClick: this.setTool, disabled, tag: Tool.BRIGHTNESS },
+                        { icon: mdiContrastBox, label: 'Contrast (Ctrl+C)', onClick: this.setTool, disabled, tag: Tool.CONTRAST },
+                        { icon: mdiBlur, label: 'Blur (Ctrl+E)', onClick: this.setTool, disabled, tag: Tool.BLUR },
+                        { icon: mdiInvertColorsOff, label: 'Grayscale (Ctrl+G)', onClick: this.setTool, disabled, tag: Tool.GRAYSCALE },
+                        { icon: mdiImageFilterTiltShift, label: 'Hue rotate (Ctrl+H)', onClick: this.setTool, disabled, tag: Tool.HUE_ROTATE },
+                        { icon: mdiInvertColors, label: 'Invert (Ctrl+I)', onClick: this.setTool, disabled, tag: Tool.INVERT  },
+                        { icon: mdiPaletteOutline, label: 'Saturate (Ctrl+U)', onClick: this.setTool, disabled, tag: Tool.SATURATE  },
+                        { icon: mdiAlphaS, label: 'Sepia (Ctrl+P)', onClick: this.setTool, disabled, tag: Tool.SEPIA },
+                        { icon: mdiFormatRotate90, label: 'Rotation (Ctrl+R)', onClick: this.setTool, disabled, tag: Tool.ROTATE },
+                        { icon: mdiImageFilterVintage, label: 'Filters (Ctrl+F)', onClick: this.setTool, disabled, tag: Tool.FILTER }
                     ]} />
                 <Panel
                     name="status"
@@ -201,10 +257,10 @@ export default class App extends React.Component<{}, IAppState> {
                             name="history"
                             type="horizontal"
                             items={[
-                                { label: 'Zoom out', icon: mdiMagnifyMinusOutline, onClick: this.scaleOut, disabled },
+                                { label: 'Zoom out (-)', icon: mdiMagnifyMinusOutline, onClick: this.scaleOut, disabled },
                                 { label: 'Reset', icon: mdiSquareOutline, onClick: this.scaleReset, disabled },
                                 { label: 'Fit', icon: mdiRelativeScale, onClick: this.scaleFit, disabled },
-                                { label: 'Zoom in', icon: mdiMagnifyPlusOutline, onClick: this.scaleIn, disabled },
+                                { label: 'Zoom in (+)', icon: mdiMagnifyPlusOutline, onClick: this.scaleIn, disabled },
                                 { text: `${~~(scale * 100)}%`}
                             ]}
                         />
@@ -228,8 +284,8 @@ export default class App extends React.Component<{}, IAppState> {
                             name="history"
                             type="horizontal"
                             items={[
-                                { label: 'Undo', icon: mdiUndo, onClick: this.onUndo, disabled: historyIndex - 1 < 0 },
-                                { label: 'Redo', icon: mdiRedo, onClick: this.onRedo, disabled: historyIndex + 1 >= history.length },
+                                { label: 'Undo (Ctrl+Z)', icon: mdiUndo, onClick: this.onUndo, disabled: historyIndex - 1 < 0 },
+                                { label: 'Redo (Ctrl+Shift+Z)', icon: mdiRedo, onClick: this.onRedo, disabled: historyIndex + 1 >= history.length },
                             ]}
                         />
                         <History
