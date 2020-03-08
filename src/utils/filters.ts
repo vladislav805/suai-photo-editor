@@ -54,7 +54,7 @@ const blue: FilterFx = createFilter((bundle) => {
 
     for (let i = 0; i < data.length; i += 4) {
         data[i] = 0;
-        data[i + 2] = 0;
+        data[i + 1] = 0;
     }
 
     return bundle;
@@ -65,7 +65,7 @@ const green: FilterFx = createFilter((bundle) => {
 
     for (let i = 0; i < data.length; i += 4) {
         data[i] = 0;
-        data[i + 1] = 0;
+        data[i + 2] = 0;
     }
 
     return bundle;
@@ -189,8 +189,8 @@ const saturation: FilterFx = createFilter(bundle => {
 
 export default [
     { id: 0, title: 'Red', applyFilter: red },
-    { id: 1, title: 'Blue', applyFilter: blue },
-    { id: 2, title: 'Green', applyFilter: green },
+    { id: 1, title: 'Green', applyFilter: green },
+    { id: 2, title: 'Blue', applyFilter: blue },
     { id: 3, title: 'Grayscale', applyFilter: grayscale },
     { id: 4, title: 'Invert', applyFilter: invert },
     { id: 5, title: 'Mirror', applyFilter: mirror },
