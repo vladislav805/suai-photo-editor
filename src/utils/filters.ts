@@ -1,6 +1,6 @@
-import { createCanvasWithImage } from "./canvas";
-import { makeImageFromCanvas } from "./image";
-import convolution from "./convolution";
+import { createCanvasWithImage } from './canvas';
+import { makeImageFromCanvas } from './image';
+import convolution from './convolution';
 
 export type FilterFx = (thumb: HTMLImageElement) => Promise<string>;
 export type ImageFilterBundle = {

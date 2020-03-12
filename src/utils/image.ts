@@ -1,4 +1,4 @@
-import { getDataUriByCanvas } from "./canvas";
+import { getDataUriByCanvas } from './canvas';
 
 type Img = HTMLImageElement;
 
