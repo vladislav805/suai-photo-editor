@@ -104,12 +104,12 @@ const mirror: FilterFx = createFilter(bundle => {
 
     for (let h = 0; h < height; h++) {
         const offset = h * width * 4;
-        const middle = width * 4 / 2;
+        const middle = width / 2;
 
         for (let w = 0; w < middle; w++) {
             const pos = w * 4;
             const pixel = pos + offset;
-            const lastPixel = width - pos - 4 + offset;
+            const lastPixel = width * 4 - pos - 4 + offset;
 
             tmp[0] = pixels[pixel];
             tmp[1] = pixels[pixel + 1];
